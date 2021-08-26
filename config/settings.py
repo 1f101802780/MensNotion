@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=jtmyzd%i)9xi%8o*bx8qq^ijyw9bb3+af+s76_o9mt@rb=bcx'
+SECRET_KEY = 'django-insecure-y9l%p2t98cqc9r=)67mlnbj#x4bsp57+3em0j&!h7wdg15g^$z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'groomings.apps.GroomingsConfig',
+    'groomings',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
