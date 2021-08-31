@@ -6,6 +6,16 @@
     </head>
     <body>
         <h1 style="color: red;">Login</h1>
-        <a href="{%url 'groomings:top' %}">login</a>
+        <p>
+            <label for = "username">User Name: </label>
+            <input id = "username" type = "text">
+        </p>
+        <p>
+            <label for = "password">Password: </label>
+            <input id = "password" type = "password">
+        </p>
+        <a href="{%url 'groomings:top' %}">
+            <input type = "submit" value="Login">
+        </a>
     </body>
 </html>
