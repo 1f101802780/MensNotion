@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
-        <title>Login</title>
+        <title>Signup</title>
         <meta charset="UTF-8">
     </head>
     <body>
-        <h1 style="color: red;">Login</h1>
+        <h1 style="color: red;">Signup</h1>
+        <p>
+            <label for = "mailaddress">email: </label>
+            <input id = "mailaddress" type = "email" required>
+        </p>
         <p>
             <label for = "username">User Name: </label>
-            <input id = "username" type = "text">
+            <input id = "username" type = "text" pattern = "^[a-zA-Z0-9]+$" required>
         </p>
         <p>
             <label for = "password">Password: </label>
-            <input id = "password" type = "password">
+            <input id = "password" type = "password" pattern = "^[a-zA-Z0-9]+$" required>
         </p>
-        <a href="{%url 'groomings:top' %}">
-            <input type = "submit" value="Login">
+        <p>
+            <label for = "re_password">Password（確認用）: </label>
+            <input id = "re_password" type = "password" pattern = "^[a-zA-Z0-9]+$" required>
+        </p>
+        <a href="{%url 'groomings:login' %}">
+            <input type = "submit" value="Signup">
         </a>
     </body>
 </html>
