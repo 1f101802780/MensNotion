@@ -16,11 +16,11 @@
         </p>
         <p>
             <label for = "password">Password: </label>
-            <input id = "password" type = "password" pattern = "^[a-zA-Z0-9]+$" required>
+            <input id = "password" type = "password" minlength ="8" pattern = "^[a-zA-Z0-9]+$" required>
         </p>
         <p>
             <label for = "re_password">Password（確認用）: </label>
-            <input id = "re_password" type = "password" pattern = "^[a-zA-Z0-9]+$" required>
+            <input id = "re_password" type = "password" minlength = "8" pattern = "^[a-zA-Z0-9]+$" required>
         </p>
         <a href="{%url 'groomings:login' %}">
             <input type = "submit" value="Signup">
