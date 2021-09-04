@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from groomings.models import User
 
 # Create your views here.
 def top(request):
@@ -14,6 +15,7 @@ def signup(request):
     return render(request, 'groomings/signup.html')
 
 def user(request, user_id):
-    """ユーザーページ""" 
-    data = {"user": user_id} # 実際のユーザーデータはモデルを作ってから代入します。
+    """ユーザーページ"""
+    user = User.objects.get(pk=user_id)
+    data = {"name": user.name, "point": user.point}
     return render(request, 'groomings/user.html', data)
