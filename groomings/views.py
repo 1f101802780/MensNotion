@@ -12,3 +12,8 @@ def login(request):
 def signup(request):
     """サインアップ画面"""
     return render(request, 'groomings/signup.html')
+
+def user(request, user_id):
+    """ユーザーページ""" 
+    data = {"user": user_id} # 実際のユーザーデータはモデルを作ってから代入します。
+    return render(request, 'groomings/user.html', data)
