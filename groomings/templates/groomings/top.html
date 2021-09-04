@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <title>Grooming</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <h1 style="color: red;">Grooming</h1>
-        <p>男性の身だしなみを評価するアプリです。</p>
-    </body>
-</html>
+{% extends "groomings/base.html" %}
+{% block title %}Grooming{% endblock %}
+
+{% block content %}
+  <h1 style="color: red;">Grooming</h1>
+  <p>男性の身だしなみを評価するアプリです。</p>
+{% endblock %}
