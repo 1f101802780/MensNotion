@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>ユーザーページ</title>
-    </head>
-    <body>
-        <h1>{{ name }}さんのユーザーページです</h1>
-        <p>ユーザー名: {{ name }}</p>
-        <p>ポイント数: {{ point }}</p>
-        <p>フォロー</p>
-        <p>フォロワー</p>
-        <p>いいねした投稿</p>
-    </body>
-</html>
+{% extends "groomings/base.html" %}
+{% block title %}{{ name }}のページ{% endblock %}
+
+{% block content %}
+    <h1>{{ name }}さんのユーザーページです</h1>
+    <p>ユーザー名: {{ name }}</p>
+    <p>ポイント数: {{ point }}</p>
+    <p>フォロー</p>
+    <p>フォロワー</p>
+    <p>いいねした投稿</p>
+{% endblock %}
