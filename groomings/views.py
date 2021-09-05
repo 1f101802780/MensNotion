@@ -19,3 +19,8 @@ def user(request, user_id):
     user = User.objects.get(pk=user_id)
     data = {"name": user.name, "point": user.point}
     return render(request, 'groomings/user.html', data)
+
+def edit_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    data = {"user": user}
+    return render(request, 'groomings/edit_user.html', data)
