@@ -21,6 +21,7 @@ def user(request, user_id):
     return render(request, 'groomings/user.html', data)
 
 def edit_user(request, user_id):
+    """ユーザー情報編集ページ"""
     user = User.objects.get(pk=user_id)
     data = {"user": user}
     return render(request, 'groomings/edit_user.html', data)
