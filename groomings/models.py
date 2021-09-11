@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.fields import related
 from django.utils.timezone import now
-import pytz
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 class User(models.Model):
@@ -57,6 +57,7 @@ class Comment(Date):
 class Question(Date):
     """匿名質問モデル"""
     text = models.TextField(null=False, blank=False)
+    give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     giver = models.ForeignKey(
         'User', on_delete=CASCADE, related_name="user_give_question"
     )
