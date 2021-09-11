@@ -34,6 +34,7 @@ class Post(Date):
         'User', on_delete=models.CASCADE, related_name="user_post"
     )
     favorite = models.ManyToManyField(User, related_name="user_favo_post")
+    category = models.CharField(max_length=15, default='カテゴリーなし')
 
     class Meta:
         db_table = 'post'
