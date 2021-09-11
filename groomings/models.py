@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.deletion import CASCADE, SET_NULL
+from django.db.models.deletion import CASCADE, SET, SET_NULL
 from django.db.models.fields import related
 from django.utils.timezone import now
 from django.core.validators import MinValueValidator
@@ -67,6 +67,10 @@ class Question(Date):
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
+    # userインスタンス.user_good_question.all() でその被質問者が「いい質問ですね(質問に対するいいね)」をした投稿を取得
+    good_question = models.ManyToManyField(User, related_name="user_good_question")
+    # Userインスタンス.user_good_answer.all() で質問者が「ありがとう！(答えに対するいいね)」をした投稿を取得
+    good_answer = models.ManyToManyField(User, related_name="user_good_answer")
 
     class Meta:
         db_table = 'question'
