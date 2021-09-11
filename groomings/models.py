@@ -29,6 +29,7 @@ class Date(models.Model):
 
 class Post(Date):
     """投稿モデル"""
+    title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name="user_post"
@@ -57,6 +58,7 @@ class Comment(Date):
 
 class Question(Date):
     """匿名質問モデル"""
+    title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=False, blank=False)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     giver = models.ForeignKey(
@@ -82,4 +84,7 @@ class Reply(Date):
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_reply"
     )
+    
+    class Meta:
+        db_table = 'reply'
     

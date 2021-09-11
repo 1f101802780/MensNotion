@@ -17,7 +17,8 @@ def signup(request):
 def user(request, user_id):
     """ユーザーページ"""
     user = User.objects.get(pk=user_id)
-    return render(request, 'groomings/user.html', context={"user": user})
+    post = user.user_post.all().first()
+    return render(request, 'groomings/user.html', context={"user": user, "post": post})
 
 def edit_user(request, user_id):
     """ユーザー情報編集ページ"""
