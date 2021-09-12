@@ -13,7 +13,7 @@
         <small>{{ post.user.name }}</small>
       </div>
       <div class="body">
-        <p class="small">{{ post.created_at }}</p>
+        <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
         <p>{{ post.text }}</p>
         <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ post | count_favo }}</span></button>
       </div>

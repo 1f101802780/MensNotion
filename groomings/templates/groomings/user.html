@@ -10,11 +10,17 @@
     <li class="nav-item"><a href="{% url 'groomings:user_favo' user.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
   </ul>
   {% for post in posts %}
-    {{ post.title}}
-    {{ post.created_at }}
-    {{ post.category }}
-    {{ post.text }}
-    {{ post | count_favo }}
+    <div class="post card">
+      <div class="card-header">
+        {{ post.title }}
+        <small>{{ post.user.name }}</small>
+      </div>
+      <div class="body">
+        <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
+        <p>{{ post.text }}</p>
+        <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ post | count_favo }}</span></button>
+      </div>
+    </div>
   {% endfor %}
 {% endblock %}
   
