@@ -1,0 +1,14 @@
+{% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% block title %}{{ user.name }}のページ{% endblock %} <!-- タイトル -->
+
+{% block content %}
+  <!-- bodyの中身 -->
+  <h1 >{{ user.name }}さんのユーザーページです</h1>
+  <div class="card-title">
+    <p>ユーザー名: {{ user.name }}</p>
+    <p>ポイント数: {{ user.point }}</p>
+  </div>
+  <div>
+    {% block posts %}{% endblock %}
+  </div>
+{% endblock %}

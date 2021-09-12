@@ -5,4 +5,17 @@
   <!-- bodyの中身 -->
   <h1>Grooming</h1>
   <p class= "alert alert-success">男性の身だしなみを評価するアプリです。</p>
+  {% for post in posts %}
+    <div class="post card">
+      <div class="card-header">
+        {{ post.title }}
+        <small>{{ post.user.name }}</small>
+      </div>
+      <div class="body">
+        <p class="small">{{ post.created_at }}</p>
+        <p>{{ post.text }}</p>
+      </div>
+    </div>
+    <br>
+  {% endfor %}
 {% endblock %}

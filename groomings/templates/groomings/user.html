@@ -1,13 +1,18 @@
-{% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
-{% block title %}{{ user.name }}のページ{% endblock %} <!-- タイトル -->
+{% extends "groomings/_user.html" %} <!-- _user.html(親)の継承 -->
 
-{% block content %}
-  <!-- bodyの中身 -->
-  <h1>{{ user.name }}さんのユーザーページです</h1>
-  <p>ユーザー名: {{ user.name }}</p>
-  <p>ポイント数: {{ user.point }}</p>
-  <p>フォロー</p>
-  <p>フォロワー</p>
-  <p>いいねした投稿</p>
-  <p>{{ post.title }}</p>
+{% block posts %}
+  <!-- postsの中身 -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a href="{% url 'groomings:user' user.id %}" class="nav-link active">自分の投稿<span class="badge badge-info">{{ posts_count }}</span></a></li>
+    <li class="nav-item"><a href="#" class="nav-link">フォロー</a></li>
+    <li class="nav-item"><a href="#" class="nav-link">フォロワー</a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user_favo' user.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
+  </ul>
+  {% for post in posts %}
+    {{ post.title}}
+    {{ post.created_at }}
+    {{ post.category }}
+    {{ post.text }}
+  {% endfor %}
 {% endblock %}
+  
