@@ -48,7 +48,7 @@ class Comment(Date):
         'User', on_delete=models.CASCADE, related_name="user_comment"
     )
     post = models.ForeignKey(
-        'Post', on_delete=models.CASCADE
+        'Post', on_delete=models.CASCADE, related_name="post_comment"
     )
     favorite = models.ManyToManyField(User, related_name="user_favo_comme")
     
@@ -61,13 +61,17 @@ class Question(Date):
     title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=False, blank=False)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
+    
+    # 質問する人
     giver = models.ForeignKey(
         'User', on_delete=CASCADE, related_name="user_give_question"
     )
+
+    # 質問される人
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
-    # userインスタンス.user_good_question.all() でその被質問者が「いい質問ですね(質問に対するいいね)」をした投稿を取得
+    # Userインスタンス.user_good_question.all() でその被質問者が「いい質問ですね(質問に対するいいね)」をした投稿を取得
     good_question = models.ManyToManyField(User, related_name="user_good_question")
     # Userインスタンス.user_good_answer.all() で質問者が「ありがとう！(答えに対するいいね)」をした投稿を取得
     good_answer = models.ManyToManyField(User, related_name="user_good_answer")
@@ -80,11 +84,15 @@ class Reply(Date):
     """質問に対する返答モデル"""
     text = models.TextField(null=False, blank=False)
     question = models.ForeignKey(
-        'Question', on_delete=CASCADE
+        'Question', on_delete=CASCADE, related_name="question_reply"
     )
+
+    # リプライした人
     giver = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_give_reply"
     )
+
+    # リプライ受け取った人
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_reply"
     )
