@@ -34,3 +34,22 @@ def edit_user(request, user_id):
     """ユーザー情報編集ページ"""
     user = User.objects.get(pk=user_id)
     return render(request, 'groomings/edit_user.html', context={"user": user})
+
+def list_create(request, user_id):
+
+    form = PostForm(request.POST, request.FILES, instance=post) #blank=Turue,null=Trueでない場合は、request.FILESが必須
+    if form.is_valid(): #バリデーションがOKなら保存
+        post = form.save(commit=False)
+        post.image = request.FILES['image']  
+        post.user = request.user
+        post.save()
+        messages.info(request, f'記事を作成しました。 タイトル:{post.title} pk:{post.pk}')
+        return redirect('post:list_index')
+    else:
+        messages.error(request, '失敗しました', extra_tags='danger')
+        return redirect('post:list_index')
+
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'post/list_create.html', dict(form=form, id=user_id))
