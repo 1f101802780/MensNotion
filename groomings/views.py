@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from . import forms
 from groomings.models import User, Post, Comment, Question, Reply
 
 # Create your views here.
@@ -35,21 +36,26 @@ def edit_user(request, user_id):
     user = User.objects.get(pk=user_id)
     return render(request, 'groomings/edit_user.html', context={"user": user})
 
-def list_create(request, user_id):
+def list_create(request): # user_id)
 
-    form = PostForm(request.POST, request.FILES, instance=post) #blank=Turue,null=Trueでない場合は、request.FILESが必須
-    if form.is_valid(): #バリデーションがOKなら保存
-        post = form.save(commit=False)
-        post.image = request.FILES['image']  
-        post.user = request.user
-        post.save()
-        messages.info(request, f'記事を作成しました。 タイトル:{post.title} pk:{post.pk}')
-        return redirect('post:list_index')
-    else:
-        messages.error(request, '失敗しました', extra_tags='danger')
-        return redirect('post:list_index')
+    form = forms.PostForm()
+    if request.method == 'POST':
+        form = forms.PostForm(request.POST)
+        if form.is_valid(): # バリデーションがOKなら保存
+            form.save()
+            return redirect('groomings:top')
+    # if form.is_valid():
+    #     post = form.save(commit=False)
+    #     post.image = request.FILES['image']  
+    #     post.user = request.user
+    #     post.save()
+    #     messages.info(request, f'記事を作成しました。 タイトル:{post.title} pk:{post.pk}')
+    #     return redirect('post:list_index')
+    # else:
+    #     messages.error(request, '失敗しました', extra_tags='danger')
+    #     return redirect('post:list_index')
 
-    else:
-        form = PostForm(instance=post)
+    # else:
+    #     form = PostForm(instance=post)
 
-    return render(request, 'post/list_create.html', dict(form=form, id=user_id))
+    return render(request, 'groomings/list_create.html', context={"form": form}) # , 'id': user_id})

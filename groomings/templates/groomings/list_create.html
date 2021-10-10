@@ -1,0 +1,10 @@
+{% extends "groomings/base.html" %}
+{% block title %}Grooming{% endblock %} <!-- タイトル -->
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="投稿">
+    </form>
+{% endblock %}
