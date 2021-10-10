@@ -40,7 +40,7 @@ def list_create(request): # user_id)
 
     form = forms.PostForm()
     if request.method == 'POST':
-        form = forms.PostForm(request.POST)
+        form = forms.PostForm(request.POST, request.FILES)
         if form.is_valid(): # バリデーションがOKなら保存
             form.save()
             return redirect('groomings:top')

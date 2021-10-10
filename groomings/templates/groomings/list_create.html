@@ -1,8 +1,8 @@
 {% extends "groomings/base.html" %}
-{% block title %}Grooming{% endblock %} <!-- タイトル -->
+{% block title %}投稿画面{% endblock %} <!-- タイトル -->
 
 {% block content %}
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="投稿">

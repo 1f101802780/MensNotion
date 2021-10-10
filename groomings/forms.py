@@ -1,6 +1,6 @@
 from django import forms
 from django.core import validators
-from .models import Question, User, Post
+from .models import Question, Post
 
 
 class BaseForm(forms.ModelForm):
@@ -16,9 +16,10 @@ class PostForm(BaseForm):
         model = Post
         exclude = ['favorite', 'created_at']
         labels = {
-            'title':'タイトル',
-            'text':'説明',
-            'category':'カテゴリー',
+            'title': 'タイトル',
+            'image': '画像',
+            'text': '説明',
+            'category': 'カテゴリー',
             'user': 'ユーザー(ログイン処理作ったら消す)'
         }
 

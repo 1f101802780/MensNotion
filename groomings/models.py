@@ -30,6 +30,7 @@ class Date(models.Model):
 class Post(Date):
     """投稿モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
+    image = models.FileField(upload_to='post_image/', null=True)
     text = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name="user_post"
