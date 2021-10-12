@@ -1,4 +1,5 @@
 {% extends "groomings/_user.html" %} <!-- _user.html(親)の継承 -->
+{% load tag_event %}
 
 {% block posts %}
     <!-- postsの中身 -->
@@ -9,8 +10,19 @@
         <li class="nav-item"><a href="{% url 'groomings:user_favo' user.id %}" class="nav-link active">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
       </ul>
     {% for favo_post in favo_posts %}
-      {{ favo_post.title }}
-      {{ favo_post.created_at }}
-      {{ favo_post.text }}
+      <div class="post card">
+        <div class="card-header">
+          {{ favo_post.title }}
+          <small>{{ favo_post.user.name }}</small>
+        </div>
+        <div class="body">
+          <p class="small">{{ favo_post.created_at }} | カテゴリー：{{ post.category }}</p>
+          {% if favo_post.image %}
+            <img src="{{ post.image.url }}">
+          {% endif %}
+          <span>{{ favo_post.text }}</span><br>
+          <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ favo_post | count_favo }}</span></button>
+        </div>
+      </div>
     {% endfor %}
 {% endblock %}
