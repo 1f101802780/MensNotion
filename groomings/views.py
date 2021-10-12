@@ -36,7 +36,7 @@ def edit_user(request, user_id):
     user = User.objects.get(pk=user_id)
     return render(request, 'groomings/edit_user.html', context={"user": user})
 
-def list_create(request): # user_id)
+def create_post(request): # user_id)
 
     form = forms.PostForm()
     if request.method == 'POST':
@@ -58,4 +58,4 @@ def list_create(request): # user_id)
     # else:
     #     form = PostForm(instance=post)
 
-    return render(request, 'groomings/list_create.html', context={"form": form}) # , 'id': user_id})
+    return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})

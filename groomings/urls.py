@@ -9,6 +9,14 @@ urlpatterns = [
     path(r'user/<int:user_id>/', views.user, name = 'user'), # ユーザー個人ページ
     path(r'user/<int:user_id>/favo', views.user_favo, name='user_favo'), # ユーザーのお気に入り投稿ページ
     path(r'edit/user/<int:user_id>/', views.edit_user, name='edit_user'), # ユーザー情報編集ページ
-    # path(r'post',views.post, name='POST'),
-    path(r'post/', views.list_create, name='list_create'), # post投稿ページ
+    path(r'post/', views.create_post, name='create_post'), # post投稿ページ
+    # ランキング用のページ
+    # 匿名質問をするためのページ(<int:user_id>必要)
+    # 投稿詳細ページ(<int:post_id>必要)
+    # 匿名質問に関するページ(自分にきた質問と自分がした質問を表示)(<int:user_id>必要)
+    # 自分がしたかされた匿名質問の詳細ページ(<int:question_id>必要)
+
+    # コメントの処理用(画面なし)
+    # リプライの処理用(画面なし)
+
 ]

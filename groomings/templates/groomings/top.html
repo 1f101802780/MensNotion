@@ -3,6 +3,15 @@
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
 {% block content %}
+<h2>url一覧</h2>
+<ul>
+  <li><a href="{% url 'groomings:login' %}">ログイン</a></li>
+  <li><a href="{% url 'groomings:signup' %}">新規登録</a></li>
+  <li><a href="{% url 'groomings:user' 1 %}">id1のユーザーページ</a></li>
+  <li><a href="{% url 'groomings:user_favo' 1 %}">id1のファボページ</a></li>
+  <li><a href="{% url 'groomings:edit_user' 1 %}">id1のユーザー編集</a></li>
+  <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
+</ul>
   <!-- bodyの中身 -->
   <h1>Grooming</h1>
   <p class= "alert alert-success">男性の身だしなみを評価するアプリです。</p>
