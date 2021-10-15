@@ -59,3 +59,7 @@ def create_post(request): # user_id)
     #     form = PostForm(instance=post)
 
     return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})
+
+def ranking(request):
+    """ランキング用のページ"""
+    return render(request, 'groomings/ranking.html')

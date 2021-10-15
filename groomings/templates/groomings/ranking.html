@@ -1,0 +1,45 @@
+{% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% block title %}Grooming{% endblock %} <!-- タイトル -->
+
+{% block content %}
+  <!-- bodyの中身 -->
+  <h1>ランキング</h1>
+    <div class="contents">
+<ul class="ranking">
+<li class="no01">
+<p class="item-name">1位</p>
+<p class="item-img"><img src="画像のURL" width="200" height="200" alt="altタグ" /></p>
+<p>ここにテキストが入ります。</p>
+<p class="link-next02"><a href="リンク先URL">「1位」の詳細を見る</a></p>
+</li>
+ 
+<li class="no02">
+<p class="item-name">2位</p>
+<p class="item-img"><img src="画像のURL" width="200" height="200" alt="altタグ" /></p>
+<p>ここにテキストが入ります。</p>
+<p class="link-next02"><a href="リンク先URL">「2位」の詳細を見る</a></p>
+</li>
+ 
+<li class="no03">
+<p class="item-name">3位</p>
+<p class="item-img"><img src="画像のURL" width="200" height="200" alt="altタグ" /></p>
+<p>ここにテキストが入ります。</p>
+<p class="link-next02"><a href="リンク先URL">「3位」の詳細を見る</a></p>
+</li>
+ 
+<li class="no04">
+<p class="item-name">4位</p>
+<p class="item-img"><img src="画像のURL" width="200" height="200" alt="altタグ" /></p>
+<p>ここにテキストが入ります。</p>
+<p class="link-next02"><a href="リンク先URL">「4位」の詳細を見る</a></p>
+</li>
+ 
+<li class="no05 end">
+<p class="item-name">5位</p>
+<p class="item-img"><img src="画像のURL" width="200" height="200" alt="altタグ" /></p>
+<p>ここにテキストが入ります。</p>
+<p class="link-next02"><a href="リンク先URL">「5位」の詳細を見る</a></p>
+</li>
+</ul>
+</div>
+{% endblock %}
