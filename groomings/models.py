@@ -3,20 +3,55 @@ from django.db.models.deletion import CASCADE, SET, SET_NULL
 from django.db.models.fields import related
 from django.utils.timezone import now
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser, PermissionsMixin
+)
 
 # Create your models here.
-class User(models.Model):
-    """ユーザーモデル"""
-    name = models.CharField(max_length=10)
-    email = models.EmailField(max_length=100)
-    password = models.CharField(max_length=50)
-    point = models.IntegerField(default=50)
+class UserManager(BaseUserManager):
+    # コマンドからユーザーを作るとき用
+    def create_user(self, username, email, password=None):
+        if not email:
+            raise ValueError('Enter Email')
+        user = self.model(    # 下に書いたユーザークラスを呼び出す
+            username = username,
+            email = email,
+            # それ以外のフィールドはデフォルトで設定される
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-    class Meta:
-        db_table = 'user'
+    def create_superuser(self, username, email, password):
+        user = self.model(
+            username = username,
+            email = email,
+        )
+        user.set_password(password)
+        user.is_staff = True
+        user.is_active = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+        
+class User(AbstractBaseUser, PermissionsMixin):
+    """ユーザーモデル"""
+    # passwordはすでにAbstractBaseUserにあるから書かない
+    # is_superuser(スーパーユーザーかどうか)もPermissionsMixinに書いてあるから書かない
+    username = models.CharField(max_length=150)
+    email = models.EmailField(max_length=255, unique=True)
+    point = models.IntegerField(default=50)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False) # 管理画面にログインできるかどうか
+
+    USERNAME_FIELD = 'email' # このテーブルのレコードを一意に識別
+    REQUIRED_FIELDS = ['username'] # スーパーユーザー作成時に入力する(emailとパスワードは必須だからそれ以外で)
+
+    objects = UserManager()
 
     def __str__(self):
-        return self.name
+        return self.email
 
 
 class Date(models.Model):
