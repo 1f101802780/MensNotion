@@ -14,7 +14,21 @@ def login(request):
 
 def signup(request):
     """サインアップ画面"""
-    return render(request, 'groomings/signup.html')
+    message = ''  # 初期表示ではカラ
+    if (request.method == 'POST'):
+        form = forms.UserAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(to='/login')
+        else:
+            message = '再入力して下さい'
+
+    modelform_dict = {
+        'form':forms.UserAddForm(),
+        'message':message, #エラーメッセージ
+    }
+    return render(request, 'groomings/signup.html', modelform_dict)
+
 
 def user(request, user_id):
     """ユーザーページ"""
@@ -63,3 +77,5 @@ def create_post(request): # user_id)
 def ranking(request):
     """ランキング用のページ"""
     return render(request, 'groomings/ranking.html')
+
+

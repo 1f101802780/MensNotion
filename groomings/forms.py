@@ -1,6 +1,6 @@
 from django import forms
 from django.core import validators
-from .models import Question, Post
+from .models import Question, Post, User
 
 
 class BaseForm(forms.ModelForm):
@@ -34,3 +34,8 @@ class QuestionForm(BaseForm):
             'giver': '自分(ログイン処理作ったら消す)',
             'recipient': '質問する相手'
         }
+
+class UserAddForm(BaseForm):
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'password']

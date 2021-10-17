@@ -4,6 +4,7 @@
 {% block content %}
     <!-- bodyの中身 -->
     <h1 style="color: red;">Signup</h1>
+    <!--
     <p>
         <label for = "mailaddress">email: </label>
         <input id = "mailaddress" type = "email" required>
@@ -23,4 +24,14 @@
     <a href="{% url 'groomings:login' %}">
         <input type = "submit" value="Signup">
     </a>
+-->
+    <p>{{message}}</p>
+    <form action="{% url 'groomings:signup' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" value="送信"></td>
+        </tr>
+      </form>
 {% endblock %}
