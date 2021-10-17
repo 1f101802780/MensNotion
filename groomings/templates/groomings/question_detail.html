@@ -1,0 +1,15 @@
+{% extends "groomings/base.html" %}
+{% block title %}匿名質問詳細{% endblock %} <!-- タイトル -->
+
+
+{% block content %}
+    <h1>{{ question.title }}の詳細ページ</h1>
+    <p>{{ question.text }}</p>
+
+    <h2>返信する</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="投稿">
+    </form>
+{% endblock %}

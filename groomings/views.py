@@ -89,4 +89,14 @@ def post_detail(request, post_id):
             return redirect('groomings:top')
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form})
 
+def question_detail(request, question_id):
+    question = Question.objects.get(pk=question_id)
+    rep_form = forms.ReplyForm()
+    if request.method == 'POST':
+        rep_form = forms.ReplyForm(request.POST)
+        if rep_form.is_valid():
+            rep_form.save()
+            return redirect('groomings:top')
+    return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form})
+
 

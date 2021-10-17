@@ -1,7 +1,7 @@
 from django import forms
 from django.core import validators
 from django.db.models import fields
-from .models import Comment, Question, Post, User
+from .models import Comment, Question, Post, Reply, User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UsernameField
 from django.core.exceptions import ValidationError
 from django.forms.widgets import PasswordInput
@@ -43,6 +43,23 @@ class QuestionForm(BaseForm):
             'giver': '自分(ログイン処理作ったら消す)',
             'recipient': '質問する相手'
         }
+
+class ReplyForm(BaseForm):
+    class Meta:
+        model = Reply
+        exclude = ['created_at']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        question = cleaned_data.get('question')
+        giver = cleaned_data.get('giver')
+        recipient = cleaned_data.get('recipient')
+        if not question.giver in [giver, recipient]:
+            raise validators.ValidationError('匿名質問の質問者か回答者しかリプできません')
+        if not question.recipient in [giver, recipient]:
+            raise validators.ValidationError('匿名質問の質問者か回答者にしかリプできません')
+        if question.giver == question.recipient:
+            raise validators.ValidationError('質問者と回答者が同じです')
 
 # ユーザー追加用のフォーム
 class UserAddForm(BaseForm):

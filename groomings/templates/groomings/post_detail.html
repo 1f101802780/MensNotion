@@ -5,6 +5,7 @@
     <h1>{{ post.title }}</h1>
     <p>{{ post.text }}</p>
 
+    <h2>コメントする</h2>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
