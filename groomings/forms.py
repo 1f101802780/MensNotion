@@ -1,6 +1,7 @@
 from django import forms
 from django.core import validators
-from .models import Question, Post, User
+from django.db.models import fields
+from .models import Comment, Question, Post, User
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UsernameField
 from django.core.exceptions import ValidationError
 from django.forms.widgets import PasswordInput
@@ -25,6 +26,11 @@ class PostForm(BaseForm):
             'category': 'カテゴリー',
             'user': 'ユーザー(ログイン処理作ったら消す)'
         }
+
+class CommentForm(BaseForm):
+    class Meta:
+        model = Comment
+        fields =('user', 'text', 'post')
 
 class QuestionForm(BaseForm):
     class Meta:

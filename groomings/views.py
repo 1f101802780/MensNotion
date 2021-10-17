@@ -78,4 +78,15 @@ def ranking(request):
     """ランキング用のページ"""
     return render(request, 'groomings/ranking.html')
 
+# 投稿詳細ページ
+def post_detail(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    comme_form = forms.CommentForm()
+    if request.method == 'POST':
+        comme_form = forms.CommentForm(request.POST)
+        if comme_form.is_valid():
+            comme_form.save()
+            return redirect('groomings:top')
+    return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form})
+
 
