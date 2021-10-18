@@ -10,7 +10,7 @@ urlpatterns = [
     path(r'user/<int:user_id>/favo', views.user_favo, name='user_favo'), # ユーザーのお気に入り投稿ページ
     path(r'edit/user/<int:user_id>/', views.edit_user, name='edit_user'), # ユーザー情報編集ページ
     path(r'post/', views.create_post, name='create_post'), # post投稿ページ
-    path(r'ranking/', views.ranking, name='ranking'),# ランキング用のページ
+    path(r'ranking/', views.ranking, name='ranking'), # ランキング用のページ
     # 匿名質問をするためのページ(<int:user_id>必要)
     path(r'post/<int:post_id>/', views.post_detail, name='post_detail'), # 投稿詳細ページ(<int:post_id>必要)
     # 匿名質問に関するページ(自分にきた質問と自分がした質問を一覧表示)(<int:user_id>必要)
