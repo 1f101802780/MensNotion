@@ -2,6 +2,8 @@ from django.db.models.fields import EmailField
 from django.shortcuts import render, redirect
 from . import forms
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from groomings.models import User, Post, Comment, Question, Reply
 
 # Create your views here.
@@ -32,8 +34,17 @@ def user_signup(request):
     if (request.method == 'POST'):
         form = forms.UserAddForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect(to='/login')
+            user = form.save(commit=False)
+            try:
+                validate_password(form.cleaned_data.get('password'), user)
+            except ValidationError as e:
+                form.add_error('password', e) # formのパスワードの部分にエラー内容を追加
+                return render(request, 'groomings/signup.html', context={
+                    'form': form
+                })
+            user.set_password(user.password) # passwordの暗号化
+            user.save()
+            return redirect(to='/login') # パスワードのエラーもなければログイン画面にリダイレクト
         else:
             message = '再入力して下さい'
 

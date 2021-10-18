@@ -76,12 +76,6 @@ class UserAddForm(BaseForm):
         if password != confirm_password:
             raise ValidationError('パスワードが一致しません')
 
-    def save(self, commit=False):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data.get("password"))
-        user.save()
-        return user
-
 # ユーザー情報変更用のフォーム
 class UserChangeForm(BaseForm):
     password = ReadOnlyPasswordHashField()
