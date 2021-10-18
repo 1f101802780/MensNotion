@@ -3,7 +3,7 @@
 
 {% block content %}
     <!-- bodyの中身 -->
-    <h1 style="color: red;">Login</h1>
+    <!-- <h1 style="color: red;">Login</h1>
     <p>
         <label for = "username">User Name: </label>
         <input id = "username" type = "text" pattern = "^[a-zA-Z0-9]+$" required>
@@ -14,5 +14,11 @@
     </p>
     <a href="{% url 'groomings:top' %}">
         <input type = "submit" value="Login">
-    </a>
+    </a> -->
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ login_form.as_p }}
+        <input type="submit" value="ログイン">
+    </form>
 {% endblock %}

@@ -3,6 +3,12 @@
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
 {% block content %}
+{% if user.is_authenticated %}
+  <p>ログインしてます</p>
+  <p>ログインユーザー:{{ request.user.username }}</p>
+{% else %}
+  <p>ログインしてません</p>
+{% endif %}
 <h2>url一覧</h2>
 <ul>
   <li><a href="{% url 'groomings:login' %}">ログイン</a></li>
@@ -25,7 +31,7 @@
       <div class="body">
         <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
         {% if post.image %}
-          <img src="{{ post.image.url }}">
+          <img src="{{ post.image.url }}" width="200">
         {% endif %}
         <span>{{ post.text }}</span><br>
         <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ post | count_favo }}</span></button>

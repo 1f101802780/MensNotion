@@ -93,3 +93,7 @@ class UserChangeForm(BaseForm):
     def clean_password(self):
         # すでに登録されているパスワードを返す(パスワードを変更できないようにする)
         return self.initial['password']
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='メールアドレス', max_length=255)
+    password = forms.CharField(label='パスワード', widget=PasswordInput)

@@ -1,5 +1,7 @@
+from django.db.models.fields import EmailField
 from django.shortcuts import render, redirect
 from . import forms
+from django.contrib.auth import authenticate, login, logout
 from groomings.models import User, Post, Comment, Question, Reply
 
 # Create your views here.
@@ -8,11 +10,22 @@ def top(request):
     posts = Post.objects.order_by('-created_at')
     return render(request, 'groomings/top.html', context={"posts": posts})
 
-def login(request):
+def user_login(request):
     """ログイン画面"""
-    return render(request, 'groomings/login.html')
+    login_form = forms.LoginForm(request.POST or None)
+    if login_form.is_valid():
+        email = login_form.cleaned_data.get('email')
+        password = login_form.cleaned_data.get('password')
+        user = authenticate(email=email, password=password)
+        if user:
+            if user.is_active:
+                login(request, user) # ログイン
+                return redirect('groomings:top')
+    return render(request, 'groomings/login.html', context={
+        'login_form': login_form
+    })
 
-def signup(request):
+def user_signup(request):
     """サインアップ画面"""
     message = ''  # 初期表示ではカラ
     if (request.method == 'POST'):
