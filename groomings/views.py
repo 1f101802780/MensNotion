@@ -28,6 +28,7 @@ def user_login(request):
 def user_signup(request):
     """サインアップ画面"""
     message = ''  # 初期表示ではカラ
+    form = forms.UserAddForm()
     if (request.method == 'POST'):
         form = forms.UserAddForm(request.POST)
         if form.is_valid():
@@ -37,8 +38,8 @@ def user_signup(request):
             message = '再入力して下さい'
 
     modelform_dict = {
-        'form':forms.UserAddForm(),
-        'message':message, #エラーメッセージ
+        'form': form,
+        'message': message, #エラーメッセージ
     }
     return render(request, 'groomings/signup.html', modelform_dict)
 
