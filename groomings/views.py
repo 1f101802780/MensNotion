@@ -4,6 +4,7 @@ from . import forms
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 from groomings.models import User, Post, Comment, Question, Reply
 
 # Create your views here.
@@ -70,13 +71,16 @@ def user_favo(request, user_id):
     favo_count = favo_posts.count()
     return render(request, 'groomings/user_favo.html', context={"user": user, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
 
+@login_required
 def edit_user(request, user_id):
     """ユーザー情報編集ページ"""
+    if User.objects.filter(id=user_id).first() != request.user: # 自分以外の人の編集ページに入ろうとするとトップページにリダイレクト
+        return redirect('groomings:top')
     user = User.objects.get(pk=user_id)
     return render(request, 'groomings/edit_user.html', context={"user": user})
 
+@login_required
 def create_post(request): # user_id)
-
     form = forms.PostForm()
     if request.method == 'POST':
         form = forms.PostForm(request.POST, request.FILES)
@@ -108,12 +112,14 @@ def post_detail(request, post_id):
     post = Post.objects.get(pk=post_id)
     comme_form = forms.CommentForm()
     if request.method == 'POST':
-        comme_form = forms.CommentForm(request.POST)
-        if comme_form.is_valid():
-            comme_form.save()
-            return redirect('groomings:top')
+        if request.user.point > 70: # ログインユーザーのポイントが70より大きくなければコメントできない
+            comme_form = forms.CommentForm(request.POST)
+            if comme_form.is_valid():
+                comme_form.save()
+                return redirect('groomings:top') 
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form})
 
+@login_required
 def question_detail(request, question_id):
     question = Question.objects.get(pk=question_id)
     rep_form = forms.ReplyForm()
