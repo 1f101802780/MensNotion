@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>{{ question.title }}の詳細ページ</h1>
+    <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
     <p>{{ question.text }}</p>
 
     <h2>返信する</h2>

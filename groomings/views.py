@@ -122,6 +122,9 @@ def post_detail(request, post_id):
 @login_required
 def question_detail(request, question_id):
     question = Question.objects.get(pk=question_id)
+    question_users = [question.giver, question.recipient]
+    if not request.user in question_users:
+        return redirect('groomings:top')
     rep_form = forms.ReplyForm()
     if request.method == 'POST':
         rep_form = forms.ReplyForm(request.POST)
