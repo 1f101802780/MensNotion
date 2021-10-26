@@ -9,7 +9,6 @@ from django.contrib.auth.models import (
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    # コマンドからユーザーを作るとき用
     def create_user(self, username, email, password=None):
         if not email:
             raise ValueError('Enter Email')

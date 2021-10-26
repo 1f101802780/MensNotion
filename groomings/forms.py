@@ -76,17 +76,13 @@ class UserAddForm(BaseForm):
         if password != confirm_password:
             raise ValidationError('パスワードが一致しません')
 
-# ユーザー情報変更用のフォーム
-class UserChangeForm(BaseForm):
-    password = ReadOnlyPasswordHashField()
+class UserEditForm(forms.ModelForm):
+    username = forms.CharField(label='ユーザー名')
+    email = forms.EmailField(label='メールアドレス')
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'is_staff', 'is_active', 'is_superuser')
-
-    def clean_password(self):
-        # すでに登録されているパスワードを返す(パスワードを変更できないようにする)
-        return self.initial['password']
+        fields = ('username', 'email')
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='メールアドレス', max_length=255)

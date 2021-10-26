@@ -9,7 +9,7 @@ urlpatterns = [
     path(r'signup/', views.user_signup, name = 'signup'), # ユーザー登録画面
     path(r'user/<int:user_id>/', views.user, name = 'user'), # ユーザー個人ページ
     path(r'user/<int:user_id>/favo', views.user_favo, name='user_favo'), # ユーザーのお気に入り投稿ページ
-    path(r'edit/user/<int:user_id>/', views.edit_user, name='edit_user'), # ユーザー情報編集ページ
+    path(r'edit_user/', views.edit_user, name='edit_user'), # ユーザー情報編集ページ
     path(r'post/', views.create_post, name='create_post'), # post投稿ページ
     path(r'ranking/', views.ranking, name='ranking'), # ランキング用のページ
     # 匿名質問をするためのページ(<int:user_id>必要)

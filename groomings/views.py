@@ -6,6 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from groomings.models import User, Post, Comment, Question, Reply
+from django.contrib import messages
 
 # Create your views here.
 def top(request):
@@ -72,12 +73,13 @@ def user_favo(request, user_id):
     return render(request, 'groomings/user_favo.html', context={"user": user, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
 
 @login_required
-def edit_user(request, user_id):
+def edit_user(request):
     """ユーザー情報編集ページ"""
-    if User.objects.filter(id=user_id).first() != request.user: # 自分以外の人の編集ページに入ろうとするとトップページにリダイレクト
-        return redirect('groomings:top')
-    user = User.objects.get(pk=user_id)
-    return render(request, 'groomings/edit_user.html', context={"user": user})
+    edit_user_form = forms.UserEditForm(request.POST or None, instance=request.user)
+    if edit_user_form.is_valid():
+        edit_user_form.save()
+        messages.success(request, 'ユーザー情報を更新しました')
+    return render(request, 'groomings/edit_user.html', context={"edit_user_form": edit_user_form})
 
 @login_required
 def create_post(request): # user_id)

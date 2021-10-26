@@ -15,11 +15,11 @@
   <li><a href="{% url 'groomings:signup' %}">新規登録</a></li>
   <li><a href="{% url 'groomings:user' 1 %}">id1のユーザーページ</a></li>
   <li><a href="{% url 'groomings:user_favo' 1 %}">ユーザid1のファボページ</a></li>
-  <li><a href="{% url 'groomings:edit_user' 1 %}">ユーザid1のユーザー編集</a></li>
+  <li><a href="{% url 'groomings:edit_user' %}">ユーザid1のユーザー編集(ログインユーザ以外エラー)</a></li>
   <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
   <li><a href="{% url 'groomings:ranking' %}">ランキング</a></li>
   <li><a href="{% url 'groomings:post_detail' 1 %}">投稿id1の投稿詳細ページ</a></li>
-  <li><a href="{% url 'groomings:question_detail' 1 %}">匿名質問id1の匿名質問詳細ページ</a></li>
+  <li><a href="{% url 'groomings:question_detail' 1 %}">匿名質問id1の匿名質問詳細ページ(質問関係者以外はtopにリダイレクト)</a></li>
 </ul>
   <!-- bodyの中身 -->
   <h1>Grooming</h1>
