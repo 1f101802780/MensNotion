@@ -99,26 +99,12 @@ def change_password(request):
 
 @login_required
 def create_post(request): # user_id)
-    form = forms.PostForm()
-    if request.method == 'POST':
-        form = forms.PostForm(request.POST, request.FILES)
-        if form.is_valid(): # バリデーションがOKなら保存
-            form.save()
-            return redirect('groomings:top')
-    # if form.is_valid():
-    #     post = form.save(commit=False)
-    #     post.image = request.FILES['image']  
-    #     post.user = request.user
-    #     post.save()
-    #     messages.info(request, f'記事を作成しました。 タイトル:{post.title} pk:{post.pk}')
-    #     return redirect('post:list_index')
-    # else:
-    #     messages.error(request, '失敗しました', extra_tags='danger')
-    #     return redirect('post:list_index')
-
-    # else:
-    #     form = PostForm(instance=post)
-
+    form = forms.PostForm(request.POST or None, request.FILES or None)
+    if form.is_valid(): # バリデーションがOKなら保存
+        form.instance.user = request.user
+        toukou = form.save()
+        messages.info(request, f'投稿しました。ユーザー:{toukou.user} タイトル:{toukou.title} pk:{toukou.pk}')
+        return redirect('groomings:top')
     return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})
 
 def ranking(request):

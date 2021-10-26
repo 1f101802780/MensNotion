@@ -3,6 +3,13 @@
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
 {% block content %}
+<!-- messageの表示 -->
+{% if messages %}
+    {% for message in messages %}
+        <div>{{ message.message }}</div>
+    {% endfor %}
+{% endif %}
+
 {% if user.is_authenticated %}
   <p>ログインしてます</p>
   <p>ログインユーザー:{{ request.user.username }}</p>

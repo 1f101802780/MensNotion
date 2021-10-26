@@ -16,13 +16,12 @@ class BaseForm(forms.ModelForm):
 class PostForm(BaseForm):
     class Meta:
         model = Post
-        exclude = ['favorite', 'created_at']
+        exclude = ['user', 'favorite', 'created_at']
         labels = {
             'title': 'タイトル',
             'image': '画像',
             'text': '説明',
-            'category': 'カテゴリー',
-            'user': 'ユーザー(ログイン処理作ったら消す)'
+            'category': 'カテゴリー'
         }
 
 class CommentForm(BaseForm):
