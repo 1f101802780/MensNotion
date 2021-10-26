@@ -10,12 +10,18 @@
     <h3>返信一覧</h3>
     <ul>
         {% for reply in replys %}
-        <li>{{reply.giver.username }}｜{{ reply.text }}</li>
+        <li>
+            {{reply.giver.username }}<br>
+            {% if reply.image %}
+            <img src="{{ reply.image.url }}" width="150">
+            {% endif %}
+            {{ reply.text }}
+        </li>
         {% endfor %}
     </ul>
 
     <h2>返信する</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="投稿">

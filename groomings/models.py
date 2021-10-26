@@ -95,6 +95,7 @@ class Question(Date):
     """匿名質問モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=False, blank=False)
+    image = models.FileField(upload_to='question_image/', null=True)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     
     # 質問する人
@@ -118,6 +119,7 @@ class Question(Date):
 class Reply(Date):
     """質問に対する返答モデル"""
     text = models.TextField(null=False, blank=False)
+    image = models.FileField(upload_to='reply_image/', null=True)
     question = models.ForeignKey(
         'Question', on_delete=CASCADE, related_name="question_reply"
     )

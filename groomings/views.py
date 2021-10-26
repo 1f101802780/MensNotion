@@ -135,7 +135,7 @@ def question_detail(request, question_id):
     question_users = [question.giver, question.recipient]
     if not request.user in question_users:
         return redirect('groomings:top')
-    rep_form = forms.ReplyForm(request.POST or None)
+    rep_form = forms.ReplyForm(request.POST or None, request.FILES or None)
     if rep_form.is_valid():
         rep_form.instance.question = question
         rep_form.instance.giver = request.user
@@ -144,6 +144,7 @@ def question_detail(request, question_id):
         else:
             rep_form.instance.recipient = question.giver
         rep_form.save()
+        messages.success(request, '返信しました')
         return redirect('groomings:question_detail', question_id=question.id)
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})

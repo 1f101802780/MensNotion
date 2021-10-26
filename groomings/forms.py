@@ -14,6 +14,8 @@ class BaseForm(forms.ModelForm):
 
 
 class PostForm(BaseForm):
+    image = forms.FileField(required=False)
+
     class Meta:
         model = Post
         exclude = ['user', 'favorite', 'created_at']
@@ -30,21 +32,26 @@ class CommentForm(BaseForm):
         fields =('text',)
 
 class QuestionForm(BaseForm):
+    image = forms.FileField(required=False)
+
     class Meta:
         model = Question
-        exclude = ['good_question', 'good_answer']
+        exclude = ['good_question', 'good_answer', 'created_at']
         label = {
             'title': 'タイトル',
             'text': '本文',
+            'image': '画像',
             'give_point': '付与するポイント',
             'giver': '自分(ログイン処理作ったら消す)',
             'recipient': '質問する相手'
         }
 
 class ReplyForm(BaseForm):
+    image = forms.FileField(required=False)
+    
     class Meta:
         model = Reply
-        fields = ('text',)
+        fields = ('text', 'image')
 
 # ユーザー追加用のフォーム
 class UserAddForm(BaseForm):
