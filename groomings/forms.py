@@ -44,19 +44,7 @@ class QuestionForm(BaseForm):
 class ReplyForm(BaseForm):
     class Meta:
         model = Reply
-        exclude = ['created_at']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        question = cleaned_data.get('question')
-        giver = cleaned_data.get('giver')
-        recipient = cleaned_data.get('recipient')
-        if not question.giver in [giver, recipient]:
-            raise ValidationError('匿名質問の質問者か回答者しかリプできません')
-        if not question.recipient in [giver, recipient]:
-            raise ValidationError('匿名質問の質問者か回答者にしかリプできません')
-        if question.giver == question.recipient:
-            raise ValidationError('質問者と回答者が同じです')
+        fields = ('text',)
 
 # ユーザー追加用のフォーム
 class UserAddForm(BaseForm):

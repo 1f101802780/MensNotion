@@ -18,7 +18,7 @@
   <li><a href="{% url 'groomings:edit_user' %}">ユーザid1のユーザー編集(ログインユーザ以外エラー)</a></li>
   <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
   <li><a href="{% url 'groomings:ranking' %}">ランキング</a></li>
-  <li><a href="{% url 'groomings:post_detail' 1 %}">投稿id1の投稿詳細ページ</a></li>
+  <li><a href="{% url 'groomings:post_detail' 1 %}">投稿id1の投稿詳細ページ(ログインユーザー以外エラー)</a></li>
   <li><a href="{% url 'groomings:question_detail' 1 %}">匿名質問id1の匿名質問詳細ページ(質問関係者以外はtopにリダイレクト)</a></li>
   <li><a href="{% url 'groomings:change_password' %}">パスワード変更(ログインユーザー以外はエラー)</a></li>
 </ul>

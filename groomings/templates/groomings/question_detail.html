@@ -7,6 +7,13 @@
     <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
     <p>{{ question.text }}</p>
 
+    <h3>返信一覧</h3>
+    <ul>
+        {% for reply in replys %}
+        <li>{{reply.giver.username }}｜{{ reply.text }}</li>
+        {% endfor %}
+    </ul>
+
     <h2>返信する</h2>
     <form method="POST">
         {% csrf_token %}
