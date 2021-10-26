@@ -1,7 +1,7 @@
 from django.db.models.fields import EmailField
 from django.shortcuts import render, redirect
 from . import forms
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
@@ -80,6 +80,22 @@ def edit_user(request):
         edit_user_form.save()
         messages.success(request, 'ユーザー情報を更新しました')
     return render(request, 'groomings/edit_user.html', context={"edit_user_form": edit_user_form})
+
+@login_required
+def change_password(request):
+    password_change_form = forms.PasswordChangeForm(request.POST or None, instance=request.user)
+    if password_change_form.is_valid():
+        try:
+            password_change_form.save()
+            messages.success(request, 'パスワードを変更しました')
+            update_session_auth_hash(request, request.user)
+        except ValidationError as e:
+            password_change_form.add_error('password', e)
+    return render(request, 'groomings/change_password.html', context={
+        'password_change_form': password_change_form
+        })
+
+
 
 @login_required
 def create_post(request): # user_id)
