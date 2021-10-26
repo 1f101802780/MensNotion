@@ -12,6 +12,12 @@
     <body>
         <a href="{% url 'groomings:top' %}">トップへ</a>
         <div class="container">
+            <!-- messageの表示 -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message.message }}</div>
+                {% endfor %}
+            {% endif %}
             {% block content %}{% endblock %}
         </div>
 

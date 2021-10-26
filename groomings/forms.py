@@ -27,7 +27,7 @@ class PostForm(BaseForm):
 class CommentForm(BaseForm):
     class Meta:
         model = Comment
-        fields =('user', 'text', 'post')
+        fields =('text',)
 
 class QuestionForm(BaseForm):
     class Meta:

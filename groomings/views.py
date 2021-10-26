@@ -24,6 +24,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user) # ログイン
+                messages.success(request, 'ログインしました')
                 return redirect('groomings:top')
     return render(request, 'groomings/login.html', context={
         'login_form': login_form
@@ -112,16 +113,21 @@ def ranking(request):
     return render(request, 'groomings/ranking.html')
 
 # 投稿詳細ページ
+@login_required
 def post_detail(request, post_id):
     post = Post.objects.get(pk=post_id)
-    comme_form = forms.CommentForm()
-    if request.method == 'POST':
+    comme_form = forms.CommentForm(request.POST or None)
+    if comme_form.is_valid():
         if request.user.point > 70: # ログインユーザーのポイントが70より大きくなければコメントできない
-            comme_form = forms.CommentForm(request.POST)
-            if comme_form.is_valid():
-                comme_form.save()
-                return redirect('groomings:top') 
-    return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form})
+            comme_form.instance.user = request.user
+            comme_form.instance.post = post
+            comme_form.save()
+            messages.success(request, 'コメントしました')
+            return redirect('groomings:top')
+        else:
+            messages.warning(request, '所持ポイントが足りません')
+    comments = post.post_comment.all()
+    return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form, "comments": comments})
 
 @login_required
 def question_detail(request, question_id):

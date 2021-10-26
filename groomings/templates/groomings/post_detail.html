@@ -11,4 +11,11 @@
         {{ form.as_p }}
         <input type="submit" value="送信">
     </form>
+
+    <h3>コメント一覧</h3>
+    <ul>
+        {% for comment in comments %}
+        <li>{{ comment.user.username }}｜{{ comment.text }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
