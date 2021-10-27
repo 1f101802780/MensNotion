@@ -116,7 +116,8 @@ def create_post(request): # user_id)
 
 def ranking(request):
     """ランキング用のページ"""
-    return render(request, 'groomings/ranking.html')
+    users = User.objects.order_by('-point')
+    return render(request, 'groomings/ranking.html',context={"users": users}) # , 'id': user_id})
 
 # 投稿詳細ページ
 @login_required
