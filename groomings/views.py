@@ -1,5 +1,6 @@
 from django.db.models.fields import EmailField
 from django.http.response import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from . import forms
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -8,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from groomings.models import User, Post, Comment, Question, Reply
 from django.contrib import messages
+
 
 # Create your views here.
 def top(request):
@@ -34,7 +36,7 @@ def user_login(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return redirect('groomings:login')
+    return HttpResponseRedirect(reverse('groomings:login'))
 
 def user_signup(request):
     """サインアップ画面"""
