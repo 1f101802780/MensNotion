@@ -1,4 +1,5 @@
 from django.db.models.fields import EmailField
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from . import forms
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -29,6 +30,11 @@ def user_login(request):
     return render(request, 'groomings/login.html', context={
         'login_form': login_form
     })
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('groomings:login')
 
 def user_signup(request):
     """サインアップ画面"""
@@ -148,5 +154,3 @@ def question_detail(request, question_id):
         return redirect('groomings:question_detail', question_id=question.id)
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
-
-
