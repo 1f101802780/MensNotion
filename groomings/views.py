@@ -29,6 +29,7 @@ def user_login(request):
                 login(request, user) # ログイン
                 messages.success(request, 'ログインしました')
                 return redirect('groomings:top')
+        messages.warning(request, 'ログインできませんでした')
     return render(request, 'groomings/login.html', context={
         'login_form': login_form
     })
@@ -40,30 +41,20 @@ def user_logout(request):
 
 def user_signup(request):
     """サインアップ画面"""
-    message = ''  # 初期表示ではカラ
     form = forms.UserAddForm()
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         form = forms.UserAddForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
             try:
-                validate_password(form.cleaned_data.get('password'), user)
+                form.save()
+                messages.success(request, 'ユーザーを登録しました')
+                return redirect('groomings:login')
             except ValidationError as e:
                 form.add_error('password', e) # formのパスワードの部分にエラー内容を追加
-                return render(request, 'groomings/signup.html', context={
-                    'form': form
-                })
-            user.set_password(user.password) # passwordの暗号化
-            user.save()
-            return redirect(to='/login') # パスワードのエラーもなければログイン画面にリダイレクト
-        else:
-            message = '再入力して下さい'
-
-    modelform_dict = {
+        messages.warning(request, '再入力してください')
+    return render(request, 'groomings/signup.html', context={
         'form': form,
-        'message': message, #エラーメッセージ
-    }
-    return render(request, 'groomings/signup.html', modelform_dict)
+    })
 
 
 def user(request, user_id):

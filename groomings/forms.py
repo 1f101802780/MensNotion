@@ -68,6 +68,14 @@ class UserAddForm(BaseForm):
         if password != confirm_password:
             raise ValidationError('パスワードが一致しません')
 
+    def save(self, commit=False):
+        user = super().save(commit=False)
+        validate_password(self.cleaned_data['password'], user)
+        user.set_password(user.password)
+        user.save()
+        return user
+
+
 class UserEditForm(BaseForm):
     username = forms.CharField(label='ユーザー名')
     email = forms.EmailField(label='メールアドレス')
