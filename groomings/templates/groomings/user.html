@@ -4,10 +4,10 @@
 {% block posts %}
   <!-- postsの中身 -->
   <ul class="nav nav-tabs">
-    <li class="nav-item"><a href="{% url 'groomings:user' user.id %}" class="nav-link active">自分の投稿<span class="badge badge-info">{{ posts_count }}</span></a></li>
-    <li class="nav-item"><a href="#" class="nav-link">フォロー</a></li>
-    <li class="nav-item"><a href="#" class="nav-link">フォロワー</a></li>
-    <li class="nav-item"><a href="{% url 'groomings:user_favo' user.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link active">自分の投稿<span class="badge badge-info">{{ posts_count }}</span></a></li>
+    <li class="nav-item"><a href="{% url 'groomings:followee' page_owner.id %}" class="nav-link">フォロー</a></li>
+    <li class="nav-item"><a href="{% url 'groomings:follower' page_owner.id %}" class="nav-link">フォロワー</a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user_favo' page_owner.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
   </ul>
   {% for post in posts %}
     <div class="post card">

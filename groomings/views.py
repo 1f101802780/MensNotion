@@ -37,7 +37,8 @@ def user_login(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('groomings:login'))
+    messages.success(request, 'ログアウトしました')
+    return redirect('groomings:login')
 
 def user_signup(request):
     """サインアップ画面"""
@@ -56,21 +57,24 @@ def user_signup(request):
         'form': form,
     })
 
-
+@login_required
 def user(request, user_id):
     """ユーザーページ"""
     user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all()
     posts = user.user_post.all()
     posts_count = user.user_post.all().count()
     favo_count = user.user_favo_post.all().count()
-    return render(request, 'groomings/user.html', context={"user": user, "posts": posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts, "posts_count": posts_count, "favo_count": favo_count})
 
+@login_required
 def user_favo(request, user_id):
     user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
     posts_count = user.user_post.all().count()
     favo_count = favo_posts.count()
-    return render(request, 'groomings/user_favo.html', context={"user": user, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
 
 @login_required
 def edit_user(request):
@@ -148,3 +152,48 @@ def question_detail(request, question_id):
         return redirect('groomings:question_detail', question_id=question.id)
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
+
+
+@login_required
+def follow(request, user_id):
+    follow_user = User.objects.get(pk=user_id)
+    if request.user == follow_user:
+        messages.warning(request, '自分自身はフォローできません')
+        return redirect('groomings:top')
+    elif follow_user in request.user.follow.all():
+        messages.warning(request, 'すでにフォロー中のユーザーはフォローできません')
+        return redirect('groomings:user', user_id=user_id)
+    else:
+        request.user.follow.add(follow_user)
+        messages.success(request, f'{follow_user.username}をフォローしました')
+        return redirect('groomings:user', user_id=user_id)
+
+@login_required
+def unfollow(request, user_id):
+    unfollow_user = request.user.follow.all().filter(pk=user_id).first()
+    if unfollow_user:
+        request.user.follow.remove(unfollow_user)
+        messages.success(request, f'{unfollow_user.username}のフォローを解除しました')
+        return redirect('groomings:user', user_id=user_id)
+    else:
+        messages.warning(request, 'フォローしてないユーザーです')
+        return redirect('groomings:user', user_id=user_id)
+
+@login_required
+def followee(request, user_id):
+    user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
+    followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
+    posts_count = user.user_post.all().count()
+    favo_count = user.user_favo_post.all().count()
+    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees, "posts_count": posts_count, "favo_count": favo_count})
+
+@login_required
+def follower(request, user_id):
+    user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
+    followers = user.follower.all() # useridのユーザーのフォロワーたち
+    posts_count = user.user_post.all().count()
+    favo_count = user.user_favo_post.all().count()
+    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "posts_count": posts_count, "favo_count": favo_count})
+    
