@@ -5,7 +5,7 @@
 {% block content %}
 {% if user.is_authenticated %}
   <p>ログインしてます</p>
-  <p>ログインユーザー:{{ request.user.username }}</p>
+  <p>ログインユーザー:{{ request.user }}</p>
 {% else %}
   <p>ログインしてません</p>
 {% endif %}

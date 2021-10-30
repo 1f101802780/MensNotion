@@ -1,0 +1,17 @@
+{% extends "groomings/_user.html" %} <!-- _user.html(親)の継承 -->
+{% load tag_event %}
+
+{% block posts %}
+  <!-- postsの中身 -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link">自分の投稿<span class="badge badge-info">{{ posts_count }}</span></a></li>
+    <li class="nav-item"><a href="{% url 'groomings:followee' page_owner.id %}" class="nav-link">フォロー</a></li>
+    <li class="nav-item"><a href="{% url 'groomings:follower' page_owner.id %}" class="nav-link active">フォロワー</a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user_favo' page_owner.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ favo_count }}</span></a></li>
+  </ul>
+  {% for follower in followers %}
+    <div class="post card">
+        {{ follower.username }}
+    </div>
+  {% endfor %}
+{% endblock %}
