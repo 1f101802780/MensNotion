@@ -17,8 +17,9 @@ urlpatterns = [
     path(r'post/<int:post_id>/', views.post_detail, name='post_detail'), # 投稿詳細ページ(<int:post_id>必要)
     # 匿名質問に関するページ(自分にきた質問と自分がした質問を一覧表示)(<int:user_id>必要)
     path(r'question/<int:question_id>/', views.question_detail, name='question_detail'), # 自分がしたかされた匿名質問の詳細ページ(<int:question_id>必要)
-    path(r'follow/<int:user_id>/', views.follow, name='follow'), # フォロー用のpath
-    path(r'unfollow/<int:user_id>/', views.unfollow, name='unfollow'), # フォロー解除用のpath
+    path(r'follow/<int:user_id>/', views.follow, name='follow'), # フォロー用のurl
+    path(r'unfollow/<int:user_id>/', views.unfollow, name='unfollow'), # フォロー解除用のurl
     path(r'followee/<int:user_id>/', views.followee, name='followee'), # フォローしてるユーザー一覧ページ
-    path(r'follower/<int:user_id>/', views.follower, name='follower'),
+    path(r'follower/<int:user_id>/', views.follower, name='follower'), # フォロワーの一覧ページ
+    path(r'favorite/<int:post_id>/', views.favorite, name='favorite'), # 投稿へのいいねあるいはいいねの取り消し用url
 ]
