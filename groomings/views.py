@@ -137,7 +137,7 @@ def post_detail(request, post_id):
 def question_detail(request, question_id):
     question = Question.objects.get(pk=question_id)
     question_users = [question.giver, question.recipient]
-    if not request.user in question_users:
+    if not request.user in question_users: # 匿名質問した人か答える人以外はtopへリダイレクト
         return redirect('groomings:top')
     rep_form = forms.ReplyForm(request.POST or None, request.FILES or None)
     if rep_form.is_valid():
@@ -197,3 +197,18 @@ def follower(request, user_id):
     favo_count = user.user_favo_post.all().count()
     return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "posts_count": posts_count, "favo_count": favo_count})
     
+@login_required
+def favorite(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if request.user in post.favorite.all():
+        post.favorite.remove(request.user)
+        post.user.point -= 5 # いいねが取り消されたユーザーは5ポイントマイナスされる
+        post.user.save()
+        messages.success(request, 'いいねを取り消しました')
+        return redirect('groomings:post_detail', post_id)
+    else:
+        post.favorite.add(request.user)
+        post.user.point += 5 # いいねされたユーザーは5ポイントプラスされる
+        post.user.save()
+        messages.success(request, 'いいねしました')
+        return redirect('groomings:post_detail', post_id)

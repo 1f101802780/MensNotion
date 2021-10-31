@@ -38,7 +38,13 @@
           <img src="{{ post.image.url }}" width="200">
         {% endif %}
         <span>{{ post.text }}</span><br>
-        <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ post | count_favo }}</span></button>
+        {% if user.is_authenticated %}
+          {% if request.user in post.favorite.all %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% else %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
     <br>
