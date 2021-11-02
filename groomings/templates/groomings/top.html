@@ -32,7 +32,7 @@
     <div class="post card">
       <div class="card-header">
         <a href="{% url 'groomings:post_detail' post.id %}" class="postcard-a">{{ post.title }}</a>
-        <small>{{ post.user.username }}</small>
+        <a href="{% url 'groomings:user' post.user_id %}" class="usercard-a">{{ post.user.username }}</a>
       </div>
       <div class="body">
         <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
