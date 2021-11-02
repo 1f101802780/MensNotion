@@ -14,7 +14,7 @@
   <li><a href="{% url 'groomings:login' %}">ログイン</a></li>
   <li><a href="{% url 'groomings:logout' %}">ログアウト</a></li>
   <li><a href="{% url 'groomings:signup' %}">新規登録</a></li>
-  <li><a href="{% url 'groomings:user' 1 %}">id1のユーザーページ</a></li>
+  <li><a href="{% url 'groomings:user' request.user.user_id %}">マイページ</a></li>
   <li><a href="{% url 'groomings:user_favo' 1 %}">ユーザid1のファボページ</a></li>
   <li><a href="{% url 'groomings:edit_user' %}">ユーザid1のユーザー編集(ログインユーザ以外エラー)</a></li>
   <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
