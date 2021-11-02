@@ -29,7 +29,7 @@
   {% for post in posts %}
     <div class="post card">
       <div class="card-header">
-        {{ post.title }}
+        <a href="{% url 'groomings:post_detail' post.id %}" class="postcard-a">{{ post.title }}</a>
         <small>{{ post.user.username }}</small>
       </div>
       <div class="body">
