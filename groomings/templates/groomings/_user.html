@@ -1,12 +1,19 @@
 {% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
-{% block title %}{{ user.username }}のページ{% endblock %} <!-- タイトル -->
+{% block title %}{{ page_owner.username }}のページ{% endblock %} <!-- タイトル -->
 
 {% block content %}
   <!-- bodyの中身 -->
-  <h1 >{{ user.username }}さんのユーザーページです</h1>
+  <h1 >{{ page_owner.username }}さんのユーザーページです</h1>
   <div class="card-title">
-    <p>ユーザー名: {{ user.username }}</p>
-    <p>ポイント数: {{ user.point }}</p>
+    <p>ユーザー名: {{ page_owner.username }}</p>
+    <p>ポイント数: {{ page_owner.point }}</p>
+    {% if page_owner != request.user %}
+      {% if page_owner in my_follows %}
+      <a href="{% url 'groomings:unfollow' page_owner.id %}" class="btn btn-outline-danger">フォロー解除</a>
+      {% else %}
+      <a href="{% url 'groomings:follow' page_owner.id %}" class="btn btn-outline-info">フォローする</a>
+      {% endif %}
+    {% endif %}
   </div>
   <div>
     {% block posts %}{% endblock %}

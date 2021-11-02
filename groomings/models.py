@@ -41,6 +41,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=150)
     email = models.EmailField(max_length=255, unique=True)
     point = models.IntegerField(default=50)
+    follow = models.ManyToManyField(
+        'self', blank=True, symmetrical=False, related_name="follower"
+    )
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) # 管理画面にログインできるかどうか
 

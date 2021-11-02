@@ -29,6 +29,7 @@ def user_login(request):
                 login(request, user) # ログイン
                 messages.success(request, 'ログインしました')
                 return redirect('groomings:top')
+        messages.warning(request, 'ログインできませんでした')
     return render(request, 'groomings/login.html', context={
         'login_form': login_form
     })
@@ -36,50 +37,44 @@ def user_login(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('groomings:login'))
+    messages.success(request, 'ログアウトしました')
+    return redirect('groomings:login')
 
 def user_signup(request):
     """サインアップ画面"""
-    message = ''  # 初期表示ではカラ
     form = forms.UserAddForm()
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         form = forms.UserAddForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
             try:
-                validate_password(form.cleaned_data.get('password'), user)
+                form.save()
+                messages.success(request, 'ユーザーを登録しました')
+                return redirect('groomings:login')
             except ValidationError as e:
                 form.add_error('password', e) # formのパスワードの部分にエラー内容を追加
-                return render(request, 'groomings/signup.html', context={
-                    'form': form
-                })
-            user.set_password(user.password) # passwordの暗号化
-            user.save()
-            return redirect(to='/login') # パスワードのエラーもなければログイン画面にリダイレクト
-        else:
-            message = '再入力して下さい'
-
-    modelform_dict = {
+        messages.warning(request, '再入力してください')
+    return render(request, 'groomings/signup.html', context={
         'form': form,
-        'message': message, #エラーメッセージ
-    }
-    return render(request, 'groomings/signup.html', modelform_dict)
+    })
 
-
+@login_required
 def user(request, user_id):
     """ユーザーページ"""
     user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all()
     posts = user.user_post.all()
     posts_count = user.user_post.all().count()
     favo_count = user.user_favo_post.all().count()
-    return render(request, 'groomings/user.html', context={"user": user, "posts": posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts, "posts_count": posts_count, "favo_count": favo_count})
 
+@login_required
 def user_favo(request, user_id):
     user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
     posts_count = user.user_post.all().count()
     favo_count = favo_posts.count()
-    return render(request, 'groomings/user_favo.html', context={"user": user, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
 
 @login_required
 def edit_user(request):
@@ -142,7 +137,7 @@ def post_detail(request, post_id):
 def question_detail(request, question_id):
     question = Question.objects.get(pk=question_id)
     question_users = [question.giver, question.recipient]
-    if not request.user in question_users:
+    if not request.user in question_users: # 匿名質問した人か答える人以外はtopへリダイレクト
         return redirect('groomings:top')
     rep_form = forms.ReplyForm(request.POST or None, request.FILES or None)
     if rep_form.is_valid():
@@ -160,3 +155,63 @@ def question_detail(request, question_id):
             messages.warning('所持ポイントが足りません。もしくは回答者のポイントが足りていません')
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
+
+
+@login_required
+def follow(request, user_id):
+    follow_user = User.objects.get(pk=user_id)
+    if request.user == follow_user:
+        messages.warning(request, '自分自身はフォローできません')
+        return redirect('groomings:top')
+    elif follow_user in request.user.follow.all():
+        messages.warning(request, 'すでにフォロー中のユーザーはフォローできません')
+        return redirect('groomings:user', user_id=user_id)
+    else:
+        request.user.follow.add(follow_user)
+        messages.success(request, f'{follow_user.username}をフォローしました')
+        return redirect('groomings:user', user_id=user_id)
+
+@login_required
+def unfollow(request, user_id):
+    unfollow_user = request.user.follow.all().filter(pk=user_id).first()
+    if unfollow_user:
+        request.user.follow.remove(unfollow_user)
+        messages.success(request, f'{unfollow_user.username}のフォローを解除しました')
+        return redirect('groomings:user', user_id=user_id)
+    else:
+        messages.warning(request, 'フォローしてないユーザーです')
+        return redirect('groomings:user', user_id=user_id)
+
+@login_required
+def followee(request, user_id):
+    user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
+    followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
+    posts_count = user.user_post.all().count()
+    favo_count = user.user_favo_post.all().count()
+    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees, "posts_count": posts_count, "favo_count": favo_count})
+
+@login_required
+def follower(request, user_id):
+    user = User.objects.get(pk=user_id)
+    my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
+    followers = user.follower.all() # useridのユーザーのフォロワーたち
+    posts_count = user.user_post.all().count()
+    favo_count = user.user_favo_post.all().count()
+    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "posts_count": posts_count, "favo_count": favo_count})
+    
+@login_required
+def favorite(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if request.user in post.favorite.all():
+        post.favorite.remove(request.user)
+        post.user.point -= 5 # いいねが取り消されたユーザーは5ポイントマイナスされる
+        post.user.save()
+        messages.success(request, 'いいねを取り消しました')
+        return redirect('groomings:post_detail', post_id)
+    else:
+        post.favorite.add(request.user)
+        post.user.point += 5 # いいねされたユーザーは5ポイントプラスされる
+        post.user.save()
+        messages.success(request, 'いいねしました')
+        return redirect('groomings:post_detail', post_id)
