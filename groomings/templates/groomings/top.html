@@ -8,6 +8,7 @@
   <p>ログインしてます</p>
   <p>ログインユーザー:{{ request.user.username }}</p>
   <p>すばるだよ</p>
+  <p>テストだよ</p>
   <ul>
     <li><a href="{% url 'groomings:user' request.user.id %}">マイページ</a></li>
     <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
