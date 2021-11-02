@@ -7,10 +7,11 @@
 {% if user.is_authenticated %}
   <p>ログインしてます</p>
   <p>ログインユーザー:{{ request.user.username }}</p>
+  <p>すばるだよ</p>
   <ul>
     <li><a href="{% url 'groomings:user' request.user.id %}">マイページ</a></li>
     <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
-    <li><a href="{% url 'groomings:edit_user' %}">ユーザid1のユーザー編集</a></li>
+    <li><a href="{% url 'groomings:edit_user' %}">プロフィール編集</a></li>
     <li><a href="{% url 'groomings:change_password' %}">パスワード変更</a></li>
     <li><a href="{% url 'groomings:logout' %}">ログアウト</a></li>
   </ul>
@@ -18,6 +19,7 @@
   <p>ログインしてません</p>
   <a href="{% url 'groomings:login' %}">ログイン</a>
 {% endif %}
+<p>すばるだよ</p>
 <h2>url一覧</h2>
 <ul>
   <li><a href="{% url 'groomings:signup' %}">新規登録</a></li>
