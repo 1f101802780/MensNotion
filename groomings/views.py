@@ -122,7 +122,7 @@ def post_detail(request, post_id):
     post = Post.objects.get(pk=post_id)
     comme_form = forms.CommentForm(request.POST or None)
     if comme_form.is_valid():
-        if request.user.point > 70: # ログインユーザーのポイントが70より大きくなければコメントできない
+        if request.user.point > 40: # ログインユーザーのポイントが70より大きくなければコメントできない
             comme_form.instance.user = request.user
             comme_form.instance.post = post
             comme_form.save()
