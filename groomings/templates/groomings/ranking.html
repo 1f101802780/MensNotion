@@ -10,11 +10,7 @@
         {{ userrank.username }}
       </div>
       <div class="body">
-        <p class="small">{{ userrank.created_at }} | カテゴリー：{{ userrank.category }}</p>
-        {% if userank.image %}
-          <img src="{{ userrank.image.url }}" width="200">
-        {% endif %}
-        <span>{{ userrank.text }}</span><br>
+        ユーザーポイント：{{ userrank.point}}
       </div>
     </div>
     <br>
