@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1>{{ post.title }}</h1>
+    {% if post.image %}
+    <img src="{{ post.image.url }}" width="400">
+    {% endif %}
     <p>{{ post.text }}</p>
 
     <h2>コメントする</h2>
@@ -16,7 +19,7 @@
     <h3>コメント一覧</h3>
     <div class="all-comment">
         {% for comment in comments %}
-        <p>{{ comment.user.username }}｜{{ comment.text }}</p>
+        <p>{{ comment.text }} <small>{{ comment.user.username }}</small></p>
             {% if request.user in comment.favorite.all %}
             <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-danger">いいね解除<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
             {% else %}
@@ -28,6 +31,7 @@
             {% else %}
             <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-outline-dark">バッド<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
             {% endif %}
+            <hr>
         {% endfor %}
     </div>
 {% endblock %}
