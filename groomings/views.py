@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from groomings.models import User, Post, Comment, Question, Reply
 from django.contrib import messages
+from django.db.models import Count
 
 
 # Create your views here.
@@ -112,9 +113,11 @@ def create_post(request): # user_id)
     return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})
 
 def ranking(request):
-    """ランキング用のページ"""
+    """ユーザーランキング用のページ"""
     users = User.objects.order_by('-point')
-    return render(request, 'groomings/ranking.html',context={"users": users}) # , 'id': user_id})
+    post_orderby_favo = Post.objects.annotate(num_favo=Count('favorite')).order_by('-num_favo')[:10]
+    return render(request, 'groomings/ranking.html',context={"users": users,"points":post_orderby_favo}) # , 'id': user_id})
+
 
 # 投稿詳細ページ
 @login_required

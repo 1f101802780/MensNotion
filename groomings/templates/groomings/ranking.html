@@ -1,4 +1,5 @@
 {% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% load tag_event %}
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
 {% block content %}
@@ -6,11 +7,24 @@
   <h1>ユーザーランキング</h1>
 {% for userrank in users %}
     <div class="userrank card">
-      <div class="card-card-header">
-        {{ userrank.username }}
+      <div class="card-header">
+        ユーザー名：{{ userrank.username }}
       </div>
       <div class="body">
         ユーザーポイント：{{ userrank.point}}
+      </div>
+    </div>
+    <br>
+  {% endfor %}
+  <h1>いいね数ランキング</h1>
+{% for point in points %}
+    <div class="point card">
+      <div class="card-header">
+        {{ point.title }}
+      </div>
+      <div class="body">
+        <p class="small">ユーザー名：{{ point.user.username }} &nbsp; | &nbsp; いいね数：{{ point | count_favo }}</p>
+        <p>{{ point.text }}</p>
       </div>
     </div>
     <br>
