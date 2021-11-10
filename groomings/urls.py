@@ -22,5 +22,6 @@ urlpatterns = [
     path(r'followee/<int:user_id>/', views.followee, name='followee'), # フォローしてるユーザー一覧ページ
     path(r'follower/<int:user_id>/', views.follower, name='follower'), # フォロワーの一覧ページ
     path(r'favorite/<int:post_id>/', views.favorite, name='favorite'), # 投稿へのいいねあるいはいいねの取り消し用url
-    # 投稿へのコメント用url
+    path(r'favo_comme/<int:comment_id>/', views.favo_comme, name='favo_comme'), # コメントへのグッドあるいはグッドの取り消し用url
+    path(r'bad_comme/<int:comment_id>/', views.bad_comme, name='bad_comme'), # コメントへのバッドあるいはバッドの取り消しようurl
 ]

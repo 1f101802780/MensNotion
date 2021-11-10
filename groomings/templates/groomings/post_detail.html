@@ -1,4 +1,5 @@
 {% extends 'groomings/base.html' %}
+{% load tag_event %}
 {% block title %}投稿詳細ページ{% endblock %} <!-- タイトル -->
 
 {% block content %}
@@ -13,9 +14,20 @@
     </form>
 
     <h3>コメント一覧</h3>
-    <ul>
+    <div class="all-comment">
         {% for comment in comments %}
-        <li>{{ comment.user.username }}｜{{ comment.text }}</li>
+        <p>{{ comment.user.username }}｜{{ comment.text }}</p>
+            {% if request.user in comment.favorite.all %}
+            <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-danger">いいね解除<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
+            {% else %}
+            <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-outline-danger">いいね<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
+            {% endif %}
+            
+            {% if request.user in comment.bad.all %}
+            <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-dark">バッド解除<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
+            {% else %}
+            <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-outline-dark">バッド<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
+            {% endif %}
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

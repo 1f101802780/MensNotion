@@ -207,11 +207,43 @@ def favorite(request, post_id):
         post.favorite.remove(request.user)
         post.user.point -= 5 # いいねが取り消されたユーザーは5ポイントマイナスされる
         post.user.save()
-        messages.success(request, 'いいねを取り消しました')
+        messages.success(request, '投稿へのいいねを取り消しました')
         return redirect('groomings:post_detail', post_id)
     else:
         post.favorite.add(request.user)
         post.user.point += 5 # いいねされたユーザーは5ポイントプラスされる
         post.user.save()
-        messages.success(request, 'いいねしました')
+        messages.success(request, '投稿にいいねしました')
         return redirect('groomings:post_detail', post_id)
+
+@login_required
+def favo_comme(request, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    if request.user in comment.favorite.all():
+        comment.favorite.remove(request.user)
+        comment.user.point -= 5
+        comment.user.save()
+        messages.success(request, 'コメントへのいいねを取り消しました')
+        return redirect('groomings:post_detail', comment.post.id)
+    else:
+        comment.favorite.add(request.user)
+        comment.user.point += 5
+        comment.user.save()
+        messages.success(request, 'コメントにいいねしました')
+        return redirect('groomings:post_detail', comment.post.id)
+
+@login_required
+def bad_comme(request, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    if request.user in comment.bad.all():
+        comment.bad.remove(request.user)
+        comment.user.point += 5
+        comment.user.save()
+        messages.success(request, 'コメントへのバッドを取り消しました')
+        return redirect('groomings:post_detail', comment.post.id)
+    else:
+        comment.bad.add(request.user)
+        comment.user.point -= 5
+        comment.user.save()
+        messages.success(request, 'コメントにバッドしました')
+        return redirect('groomings:post_detail', comment.post.id)

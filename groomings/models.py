@@ -90,6 +90,7 @@ class Comment(Date):
         'Post', on_delete=models.CASCADE, related_name="post_comment"
     )
     favorite = models.ManyToManyField(User, related_name="user_favo_comme")
+    bad = models.ManyToManyField(User, related_name="user_bad")
     
     class Meta:
         db_table = 'comment'
