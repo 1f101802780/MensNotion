@@ -12,7 +12,6 @@ from django.contrib import messages
 from django.db.models import Count
 
 
-# Create your views here.
 def top(request):
     """トップ画面"""
     posts = Post.objects.order_by('-created_at')
@@ -70,6 +69,7 @@ def user(request, user_id):
 
 @login_required
 def user_favo(request, user_id):
+    """ユーザーのお気に入りした投稿一覧ページ"""
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
@@ -88,6 +88,7 @@ def edit_user(request):
 
 @login_required
 def change_password(request):
+    """ユーザーパスワード編集ページ"""
     password_change_form = forms.PasswordChangeForm(request.POST or None, instance=request.user)
     if password_change_form.is_valid():
         try:
@@ -100,10 +101,9 @@ def change_password(request):
         'password_change_form': password_change_form
         })
 
-
-
 @login_required
 def create_post(request): # user_id)
+    """投稿ページ"""
     form = forms.PostForm(request.POST or None, request.FILES or None)
     if form.is_valid(): # バリデーションがOKなら保存
         form.instance.user = request.user
@@ -113,15 +113,14 @@ def create_post(request): # user_id)
     return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})
 
 def ranking(request):
-    """ユーザーランキング用のページ"""
+    """ランキング用のページ"""
     users = User.objects.order_by('-point')
     post_orderby_favo = Post.objects.annotate(num_favo=Count('favorite')).order_by('-num_favo')[:10]
     return render(request, 'groomings/ranking.html',context={"users": users,"points":post_orderby_favo}) # , 'id': user_id})
 
-
-# 投稿詳細ページ
 @login_required
 def post_detail(request, post_id):
+    """投稿詳細ページ"""
     post = Post.objects.get(pk=post_id)
     comme_form = forms.CommentForm(request.POST or None)
     if comme_form.is_valid():
@@ -138,6 +137,7 @@ def post_detail(request, post_id):
 
 @login_required
 def question_detail(request, question_id):
+    """匿名質問詳細ページ"""
     question = Question.objects.get(pk=question_id)
     question_users = [question.giver, question.recipient]
     if not request.user in question_users: # 匿名質問した人か答える人以外はtopへリダイレクト
@@ -162,6 +162,7 @@ def question_detail(request, question_id):
 
 @login_required
 def follow(request, user_id):
+    """フォローする"""
     follow_user = User.objects.get(pk=user_id)
     if request.user == follow_user:
         messages.warning(request, '自分自身はフォローできません')
@@ -176,6 +177,7 @@ def follow(request, user_id):
 
 @login_required
 def unfollow(request, user_id):
+    """フォロー解除する"""
     unfollow_user = request.user.follow.all().filter(pk=user_id).first()
     if unfollow_user:
         request.user.follow.remove(unfollow_user)
@@ -187,6 +189,7 @@ def unfollow(request, user_id):
 
 @login_required
 def followee(request, user_id):
+    """フォロー中ユーザー一覧"""
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
@@ -196,6 +199,7 @@ def followee(request, user_id):
 
 @login_required
 def follower(request, user_id):
+    """フォロワー一覧"""
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followers = user.follower.all() # useridのユーザーのフォロワーたち
@@ -205,6 +209,7 @@ def follower(request, user_id):
     
 @login_required
 def favorite(request, post_id):
+    """お気に入りとお気に入りの取り消し"""
     post = Post.objects.get(pk=post_id)
     if request.user in post.favorite.all():
         post.favorite.remove(request.user)
@@ -221,6 +226,7 @@ def favorite(request, post_id):
 
 @login_required
 def favo_comme(request, comment_id):
+    """コメントへのお気に入りとお気に入りの取り消し"""
     comment = Comment.objects.get(pk=comment_id)
     if request.user in comment.favorite.all():
         comment.favorite.remove(request.user)
@@ -237,6 +243,7 @@ def favo_comme(request, comment_id):
 
 @login_required
 def bad_comme(request, comment_id):
+    """コメントへのバッドとバッド取り消し"""
     comment = Comment.objects.get(pk=comment_id)
     if request.user in comment.bad.all():
         comment.bad.remove(request.user)
