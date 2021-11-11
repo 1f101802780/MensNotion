@@ -14,3 +14,19 @@ def count_commefavo(comment):
 @register.filter(name="count_commebad")
 def count_commebad(comment):
     return comment.bad.all().count()
+
+@register.filter(name="count_follow")
+def count_follow(user):
+    return user.follow.all().count()
+
+@register.filter(name="count_follower")
+def count_follwer(user):
+    return user.follower.all().count()
+
+@register.filter(name="count_my_post")
+def count_my_post(user):
+    return user.user_post.all().count()
+
+@register.filter(name="count_my_favo")
+def count_my_favo(user):
+    return user.user_favo_post.all().count()

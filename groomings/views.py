@@ -63,9 +63,7 @@ def user(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all()
     posts = user.user_post.all()
-    posts_count = user.user_post.all().count()
-    favo_count = user.user_favo_post.all().count()
-    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts})
 
 @login_required
 def user_favo(request, user_id):
@@ -73,9 +71,7 @@ def user_favo(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
-    posts_count = user.user_post.all().count()
-    favo_count = favo_posts.count()
-    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts})
 
 @login_required
 def edit_user(request):
@@ -193,9 +189,7 @@ def followee(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
-    posts_count = user.user_post.all().count()
-    favo_count = user.user_favo_post.all().count()
-    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees})
 
 @login_required
 def follower(request, user_id):
@@ -203,9 +197,7 @@ def follower(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followers = user.follower.all() # useridのユーザーのフォロワーたち
-    posts_count = user.user_post.all().count()
-    favo_count = user.user_favo_post.all().count()
-    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "posts_count": posts_count, "favo_count": favo_count})
+    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers})
     
 @login_required
 def favorite(request, post_id):
