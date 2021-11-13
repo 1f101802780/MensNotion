@@ -28,6 +28,11 @@
   <!-- bodyの中身 -->
   <h1>Grooming</h1>
   <p class= "alert alert-success">男性の身だしなみを評価するアプリです。</p>
+  <form method="get">
+    {% csrf_token %}
+    <input name="query" value="{{ request.GET.query }}" type="search">
+    <input type="submit" value="検索する">
+  </form>
   {% for post in posts %}
     <div class="post card">
       <div class="card-header">

@@ -10,11 +10,16 @@ from django.contrib.auth.decorators import login_required
 from groomings.models import User, Post, Comment, Question, Reply
 from django.contrib import messages
 from django.db.models import Count
+from django.db.models import Q
 
 
 def top(request):
     """トップ画面"""
-    posts = Post.objects.order_by('-created_at')
+    q_word = request.GET.get('query')
+    if q_word:
+        posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+    else:
+        posts = Post.objects.order_by('-created_at')
     return render(request, 'groomings/top.html', context={"posts": posts})
 
 def user_login(request):
