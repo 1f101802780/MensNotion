@@ -15,11 +15,18 @@ from django.db.models import Q
 
 def top(request):
     """トップ画面"""
-    q_word = request.GET.get('query')
-    if q_word:
-        posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+    if request.user.is_authenticated:
+        users = request.user.follow.all()
+        posts = Post.objects.filter(Q(user__in=users) | Q(user=request.user)).order_by('-created_at')
     else:
         posts = Post.objects.order_by('-created_at')
+
+    q_word = request.GET.get('query')
+    if q_word:
+        if request.GET.get('post_type') == "follow":
+            posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+        else:
+            posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
     return render(request, 'groomings/top.html', context={"posts": posts})
 
 def user_login(request):

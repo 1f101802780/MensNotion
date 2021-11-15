@@ -31,6 +31,8 @@
   <form method="get">
     {% csrf_token %}
     <input name="query" value="{{ request.GET.query }}" type="search">
+    <input type="radio" name="post_type" value="all" checked>全ての投稿から検索
+    <input type="radio" name="post_type" value="follow">フォローユーザーの投稿から検索
     <input type="submit" value="検索する">
   </form>
   {% for post in posts %}
