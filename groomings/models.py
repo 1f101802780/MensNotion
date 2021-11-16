@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.deletion import CASCADE, SET, SET_NULL
 from django.db.models.fields import related
 from django.utils.timezone import now
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # is_superuser(スーパーユーザーかどうか)もPermissionsMixinに書いてあるから書かない
     username = models.CharField(max_length=150)
     email = models.EmailField(max_length=255, unique=True)
-    point = models.IntegerField(default=50)
+    point = models.IntegerField(default=50, validators=[MinValueValidator(0)])
     follow = models.ManyToManyField(
         'self', blank=True, symmetrical=False, related_name="follower"
     )
@@ -112,10 +112,12 @@ class Question(Date):
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
-    # Userインスタンス.user_good_question.all() でその被質問者が「いい質問ですね(質問に対するいいね)」をした投稿を取得
-    good_question = models.ManyToManyField(User, related_name="user_good_question")
-    # Userインスタンス.user_good_answer.all() で質問者が「ありがとう！(答えに対するいいね)」をした投稿を取得
-    good_answer = models.ManyToManyField(User, related_name="user_good_answer")
+    # 質問者への評価(5段階)
+    to_giver_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+    # 回答者への評価(5段階)
+    to_recipient_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+    # openかcloseか(質問者と回答者両方が評価するとclose)
+    is_activate = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'question'
