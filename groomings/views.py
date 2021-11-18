@@ -15,18 +15,24 @@ from django.db.models import Q
 
 def top(request):
     """トップ画面"""
-    if request.user.is_authenticated:
+    if request.user.is_authenticated: # ログインしていたらフォロー中ユーザーの投稿を表示
         users = request.user.follow.all()
         posts = Post.objects.filter(Q(user__in=users) | Q(user=request.user)).order_by('-created_at')
     else:
         posts = Post.objects.order_by('-created_at')
 
     q_word = request.GET.get('query')
-    if q_word:
+    if request.GET.get('button') == "検索する":
         if request.GET.get('post_type') == "follow":
-            posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+            if request.GET.get('category') == "all":
+                posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+            else:
+                posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
         else:
-            posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+            if request.GET.get('category') == "all":
+                posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+            else:
+                posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
     return render(request, 'groomings/top.html', context={"posts": posts})
 
 def user_login(request):
@@ -217,15 +223,10 @@ def favorite(request, post_id):
     post = Post.objects.get(pk=post_id)
     if request.user in post.favorite.all():
         post.favorite.remove(request.user)
-        if post.user.point >= 5:
-            post.user.point -= 5 # いいねが取り消されたユーザーは5ポイントマイナスされる
-            post.user.save()
         messages.success(request, '投稿へのいいねを取り消しました')
         return redirect('groomings:post_detail', post_id)
     else:
         post.favorite.add(request.user)
-        post.user.point += 5 # いいねされたユーザーは5ポイントプラスされる
-        post.user.save()
         messages.success(request, '投稿にいいねしました')
         return redirect('groomings:post_detail', post_id)
 

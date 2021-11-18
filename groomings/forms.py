@@ -15,6 +15,16 @@ class BaseForm(forms.ModelForm):
 
 class PostForm(BaseForm):
     image = forms.FileField(required=False)
+    category = forms.ChoiceField(
+        choices = (
+            ('none_category', 'カテゴリーなし'),
+            ('skincare', 'スキンケア'),
+            ('make', 'メイク'),
+            ('hair', 'ヘアー'),
+            ('fashion', '服装'),
+            ('others', 'その他')
+        ),
+    )
 
     class Meta:
         model = Post
