@@ -2,9 +2,18 @@
 {% block title %}投稿画面{% endblock %} <!-- タイトル -->
 
 {% block content %}
+    <h3>タグを追加</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ tag_form.as_p }}
+        <input type="submit" value="追加">
+    </form>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+        {% for tag in tags %}
+        <input type="checkbox" name="tag" value="{{ tag.id }}">{{ tag.name }}
+        {% endfor %}
         <input type="submit" value="投稿">
     </form>
 {% endblock %}

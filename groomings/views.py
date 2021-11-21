@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
-from groomings.models import User, Post, Comment, Question, Reply
+from groomings.models import User, Post, Comment, Question, Reply, Tag
 from django.contrib import messages
 from django.db.models import Count
 from django.db.models import Q
@@ -119,12 +119,23 @@ def change_password(request):
 def create_post(request): # user_id)
     """投稿ページ"""
     form = forms.PostForm(request.POST or None, request.FILES or None)
+    tag_form = forms.TagForm(request.POST or None)
+    tags = Tag.objects.all()
+
+    if tag_form.is_valid():
+        tag_form.save()
+        return redirect('groomings:create_post')
+
     if form.is_valid(): # バリデーションがOKなら保存
         form.instance.user = request.user
         toukou = form.save()
+        check_tag_ids = request.POST.getlist("tag")
+        for tag_id in check_tag_ids:
+            Tag.objects.get(pk=tag_id).post.add(toukou)
+
         messages.info(request, f'投稿しました。ユーザー:{toukou.user} タイトル:{toukou.title} pk:{toukou.pk}')
         return redirect('groomings:top')
-    return render(request, 'groomings/create_post.html', context={"form": form}) # , 'id': user_id})
+    return render(request, 'groomings/create_post.html', context={"form": form, "tag_form": tag_form, "tags": tags})
 
 def ranking(request):
     """ランキング用のページ"""

@@ -52,6 +52,10 @@
       </div>
       <div class="body">
         <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
+        {% for tag in post.having_tags.all %}
+        <span class="badge badge-primary">{{ tag.name }}</span>
+        {% endfor %}
+        <br>
         {% if post.image %}
           <img src="{{ post.image.url }}" width="200">
         {% endif %}

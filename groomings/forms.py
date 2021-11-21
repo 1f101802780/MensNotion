@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment, Question, Post, Reply, User
+from .models import Comment, Question, Post, Reply, User, Tag
 from django.core.exceptions import ValidationError
 from django.forms.widgets import PasswordInput
 from django.contrib.auth.password_validation import validate_password
@@ -119,3 +119,8 @@ class PasswordChangeForm(BaseForm):
 class LoginForm(forms.Form):
     email = forms.EmailField(label='メールアドレス', max_length=255)
     password = forms.CharField(label='パスワード', widget=PasswordInput)
+
+class TagForm(BaseForm):
+    class Meta:
+        model = Tag
+        fields = ('name',)

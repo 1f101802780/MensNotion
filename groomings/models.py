@@ -56,6 +56,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    class Meta:
+        db_table = 'user'
+
 
 class Date(models.Model):
     """日付と時間モデル(抽象モデル)"""
@@ -144,3 +147,11 @@ class Reply(Date):
     class Meta:
         db_table = 'reply'
     
+
+class Tag(models.Model):
+    """タグモデル"""
+    name = models.CharField(max_length=20, unique=True)
+    post = models.ManyToManyField('Post', related_name="having_tags")
+
+    class Meta:
+        db_table = 'tag'
