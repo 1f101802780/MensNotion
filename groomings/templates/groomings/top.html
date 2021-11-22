@@ -56,8 +56,14 @@
         <span class="badge badge-primary">{{ tag.name }}</span>
         {% endfor %}
         <br>
-        {% if post.image %}
-          <img src="{{ post.image.url }}" width="200">
+        {% if post.image1 %}
+          <img src="{{ post.image1.url }}" width="200">
+        {% endif %}
+        {% if post.image2 %}
+          <img src="{{ post.image2.url }}" width="200">
+        {% endif %}
+        {% if post.image3 %}
+          <img src="{{ post.image3.url }}" width="200">
         {% endif %}
         <span>{{ post.text }}</span><br>
         {% if user.is_authenticated %}

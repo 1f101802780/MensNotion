@@ -5,6 +5,15 @@
 {% block content %}
     <h1>{{ question.title }}の詳細ページ</h1>
     <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
+    {% if question.image1 %}
+    <img src="{{ question.image1.url }}" width="200">
+    {% endif %}
+    {% if question.image2 %}
+    <img src="{{ question.image2.url }}" width="200">
+    {% endif %}
+    {% if question.image3 %}
+    <img src="{{ question.image3.url }}" width="200">
+    {% endif %}
     <p>{{ question.text }}</p>
 
     <h3>返信一覧</h3>

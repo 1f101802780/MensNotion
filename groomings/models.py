@@ -71,7 +71,9 @@ class Date(models.Model):
 class Post(Date):
     """投稿モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
-    image = models.FileField(upload_to='post_image/', null=True)
+    image1 = models.FileField(upload_to='post_image/', null=True)
+    image2 = models.FileField(upload_to='post_image/', null=True)
+    image3 = models.FileField(upload_to='post_image/', null=True)
     text = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name="user_post"
@@ -103,7 +105,9 @@ class Question(Date):
     """匿名質問モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=False, blank=False)
-    image = models.FileField(upload_to='question_image/', null=True)
+    image1 = models.FileField(upload_to='question_image/', null=True)
+    image2 = models.FileField(upload_to='question_image/', null=True)
+    image3 = models.FileField(upload_to='question_image/', null=True)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     
     # 質問する人
@@ -120,7 +124,7 @@ class Question(Date):
     # 回答者への評価(5段階)
     to_recipient_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
     # openかcloseか(質問者と回答者両方が評価するとclose)
-    is_activate = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'question'

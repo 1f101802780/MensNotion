@@ -14,7 +14,9 @@ class BaseForm(forms.ModelForm):
 
 
 class PostForm(BaseForm):
-    image = forms.FileField(required=False)
+    image1 = forms.FileField(required=False)
+    image2 = forms.FileField(required=False)
+    image3 = forms.FileField(required=False)
     category = forms.ChoiceField(
         choices = (
             ('none_category', 'カテゴリーなし'),
@@ -31,7 +33,9 @@ class PostForm(BaseForm):
         exclude = ['user', 'favorite', 'created_at']
         labels = {
             'title': 'タイトル',
-            'image': '画像',
+            'image1': '画像1',
+            'image2': '画像2',
+            'image3': '画像3',
             'text': '説明',
             'category': 'カテゴリー'
         }
@@ -42,7 +46,9 @@ class CommentForm(BaseForm):
         fields =('text',)
 
 class QuestionForm(BaseForm):
-    image = forms.FileField(required=False)
+    image1 = forms.FileField(required=False)
+    image2 = forms.FileField(required=False)
+    image3 = forms.FileField(required=False)
 
     class Meta:
         model = Question
@@ -50,7 +56,9 @@ class QuestionForm(BaseForm):
         label = {
             'title': 'タイトル',
             'text': '本文',
-            'image': '画像',
+            'image1': '画像1',
+            'image2': '画像2',
+            'image3': '画像3',
             'give_point': '付与するポイント',
             'giver': '自分(ログイン処理作ったら消す)',
             'recipient': '質問する相手'
