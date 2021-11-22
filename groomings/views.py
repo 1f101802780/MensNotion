@@ -20,20 +20,17 @@ def top(request):
         posts = Post.objects.filter(Q(user__in=users) | Q(user=request.user)).order_by('-created_at')
     else:
         posts = Post.objects.order_by('-created_at')
-
-    q_word = request.GET.get('query')
-    if request.GET.get('button') == "検索する":
-        if request.GET.get('post_type') == "follow":
-            if request.GET.get('category') == "all":
-                posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
-            else:
-                posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
-        else:
-            if request.GET.get('category') == "all":
-                posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
-            else:
-                posts = Post.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
     return render(request, 'groomings/top.html', context={"posts": posts})
+
+def search(request):
+    posts = Post.objects.order_by('-created_at')
+    if request.GET.get('button') == "検索する":
+        q_word = request.GET.get('query')
+        if request.GET.get('category') == "all":
+            posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
+        else:
+            posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
+    return render(request, 'groomings/search.html', context={"posts": posts})
 
 def user_login(request):
     """ログイン画面"""
@@ -62,7 +59,7 @@ def user_signup(request):
     """サインアップ画面"""
     form = forms.UserAddForm()
     if request.method == 'POST':
-        form = forms.UserAddForm(request.POST)
+        form = forms.UserAddForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 form.save()
@@ -94,7 +91,7 @@ def user_favo(request, user_id):
 @login_required
 def edit_user(request):
     """ユーザー情報編集ページ"""
-    edit_user_form = forms.UserEditForm(request.POST or None, instance=request.user)
+    edit_user_form = forms.UserEditForm(request.POST or None, request.FILES or None, instance=request.user)
     if edit_user_form.is_valid():
         edit_user_form.save()
         messages.success(request, 'ユーザー情報を更新しました')

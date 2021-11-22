@@ -75,9 +75,10 @@ class ReplyForm(BaseForm):
 class UserAddForm(BaseForm):
     password = forms.CharField(label='password', widget=PasswordInput)
     confirm_password = forms.CharField(label='Password再入力', widget=PasswordInput)
+    image = forms.FileField(required=False)
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'image', 'email', 'password']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -97,10 +98,11 @@ class UserAddForm(BaseForm):
 class UserEditForm(BaseForm):
     username = forms.CharField(label='ユーザー名')
     email = forms.EmailField(label='メールアドレス')
+    image = forms.FileField(required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'image')
 
 class PasswordChangeForm(BaseForm):
     password = forms.CharField(label='パスワード', widget=forms.PasswordInput)

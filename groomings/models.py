@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # is_superuser(スーパーユーザーかどうか)もPermissionsMixinに書いてあるから書かない
     username = models.CharField(max_length=150)
     email = models.EmailField(max_length=255, unique=True)
+    image = models.FileField(upload_to='user_image/', null=True)
     point = models.IntegerField(default=50, validators=[MinValueValidator(0)])
     follow = models.ManyToManyField(
         'self', blank=True, symmetrical=False, related_name="follower"

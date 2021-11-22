@@ -23,61 +23,59 @@
   <li><a href="{% url 'groomings:user_favo' 1 %}">ユーザid1のファボページ</a></li>
   <li><a href="{% url 'groomings:ranking' %}">ランキング</a></li>
   <li><a href="{% url 'groomings:post_detail' 1 %}">投稿id1の投稿詳細ページ(ログインユーザー以外エラー)</a></li>
+  <li><a href="{% url 'groomings:search' %}">検索</a></li>
   <li><a href="{% url 'groomings:question_detail' 1 %}">匿名質問id1の匿名質問詳細ページ(質問関係者以外はtopにリダイレクト)</a></li>
 </ul>
   <!-- bodyの中身 -->
   <h1>Grooming</h1>
   <p class= "alert alert-success">男性の身だしなみを評価するアプリです。</p>
-  <form method="get">
-    {% csrf_token %}
-    <input name="query" value="{{ request.GET.query }}" type="search">
-    <input type="radio" name="post_type" value="all" checked>全てのユーザーの投稿から検索
-    <input type="radio" name="post_type" value="follow">フォローユーザーの投稿から検索
-    <hr>
-    <input type="radio" name="category" value="all" checked>全てのカテゴリーから検索
-    <input type="radio" name="category" value="skincare">スキンケアの投稿から検索
-    <input type="radio" name="category" value="make">メイクの投稿から検索
-    <input type="radio" name="category" value="hair">ヘアーの投稿から検索
-    <input type="radio" name="category" value="fashion">服装の投稿から検索
-    <input type="radio" name="category" value="others">その他の投稿から検索
-    <input type="submit" name="button" value="検索する">
-  </form>
 
-  <h5>ログインしてる場合、デフォルトではフォロー中ユーザーの投稿だけを表示してるよ</h5>
-  {% for post in posts %}
-    <div class="post card">
-      <div class="card-header">
-        <a href="{% url 'groomings:post_detail' post.id %}" class="postcard-a">{{ post.title }}</a>
-        <a href="{% url 'groomings:user' post.user.id %}" class="usercard-a">{{ post.user.username }}</a>
-      </div>
-      <div class="body">
-        <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
-        {% for tag in post.having_tags.all %}
-        <span class="badge badge-primary">{{ tag.name }}</span>
-        {% endfor %}
-        <br>
-        {% if post.image1 %}
-          <img src="{{ post.image1.url }}" width="200">
+  {% if not posts %}
+  <h5>表示する投稿がありません。ユーザーをフォローしましょう。</h5>
+  {% endif %}
+
+  <ul class="list-unstyled">
+    {% for post in posts %}
+    <li class="media mb-3 post">
+        {% if post.user.image %}
+        <img src="{{ post.user.image.url }}" width="40px">
+        {% else %}
+        <img src="/media/static/default.png" width="40px">
         {% endif %}
-        {% if post.image2 %}
-          <img src="{{ post.image2.url }}" width="200">
+        <div class="media-body">
+            <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
+            <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
+            <span class="text-muted">{{ post.created_at }}</span><br>
+            {% for tag in post.having_tags.all %}
+            <span class="badge badge-primary">{{ tag.name }}</span>
+            {% endfor %}
+            <div>
+                {{ post.text }}
+            </div>
+            <div class="post_image">
+                {% if post.image1 %}
+                <img src="{{ post.image1.url }}" alt="" width="100px">
+                {% endif %}
+                {% if post.image2 %}
+                <img src="{{ post.image2.url }}" alt="" width="100px">
+                {% endif %}
+                {% if post.image3 %}
+                <img src="{{ post.image3.url }}" alt="" width="100px">
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% if user.is_authenticated %}
+        {% if request.user in post.favorite.all %}
+        <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+        {% else %}
+        <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
         {% endif %}
-        {% if post.image3 %}
-          <img src="{{ post.image3.url }}" width="200">
-        {% endif %}
-        <span>{{ post.text }}</span><br>
-        {% if user.is_authenticated %}
-          {% if request.user in post.favorite.all %}
-          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
-          {% else %}
-          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
-          {% endif %}
-        {% endif %}
-        {% if user.is_authenticated %}
+    {% endif %}
+    {% if user.is_authenticated %}
         <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
-        {% endif %}
-      </div>
-    </div>
-    <br>
-  {% endfor %}
+    {% endif %}
+    <hr>
+    {% endfor %}
+</ul>
 {% endblock %}
