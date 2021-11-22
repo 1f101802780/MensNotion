@@ -71,11 +71,11 @@ class Date(models.Model):
 
 class Post(Date):
     """投稿モデル"""
-    title = models.CharField(max_length=30, null=True, blank=True)
-    image1 = models.FileField(upload_to='post_image/', null=True)
-    image2 = models.FileField(upload_to='post_image/', null=True)
-    image3 = models.FileField(upload_to='post_image/', null=True)
-    text = models.TextField(null=True, blank=True)
+    title = models.CharField(max_length=30)
+    image1 = models.FileField(upload_to='post_image/', null=True, blank=True)
+    image2 = models.FileField(upload_to='post_image/', null=True, blank=True)
+    image3 = models.FileField(upload_to='post_image/', null=True, blank=True)
+    text = models.TextField()
     user = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name="user_post"
     )

@@ -158,6 +158,21 @@ def post_detail(request, post_id):
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form, "comments": comments})
 
 @login_required
+def post_edit(request, post_id):
+    """投稿編集ページ"""
+    post = request.user.user_post.all().filter(pk=post_id).first()
+    if not post:
+        return redirect('groomings:top')
+    edit_post_form = forms.PostForm(request.POST or None, request.FILES or None, instance=post)
+    tags = Tag.objects.all()
+    if edit_post_form.is_valid():
+        toukou = edit_post_form.save()
+        check_tag_ids = request.POST.getlist("tag")
+        toukou.having_tags.set(check_tag_ids)
+        messages.success(request, '投稿を更新しました')
+    return render(request, 'groomings/edit_post.html', context={"edit_post_form": edit_post_form, "tags": tags, "post": post})
+
+@login_required
 def question_detail(request, question_id):
     """匿名質問詳細ページ"""
     question = Question.objects.get(pk=question_id)

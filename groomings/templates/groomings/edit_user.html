@@ -4,11 +4,6 @@
 {% block content %}
   <!-- bodyの中身 -->
   <h1>ユーザー情報編集ページ</h1>
-  {% if messages %}
-    {% for message in messages %}
-        <div>{{ message.message }}</div>
-    {% endfor %}
-  {% endif %}
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ edit_user_form.as_p }}

@@ -1,0 +1,19 @@
+{% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% block title %}投稿編集{% endblock %} <!-- タイトル -->
+
+{% block content %}
+  <!-- bodyの中身 -->
+  <h1>投稿編集ページ</h1>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ edit_post_form.as_p }}
+    {% for tag in tags %}
+        {% if tag in post.having_tags.all %}
+        <input type="checkbox" name="tag" value="{{ tag.id }}" checked>{{ tag.name }}
+        {% else %}
+        <input type="checkbox" name="tag" value="{{ tag.id }}">{{ tag.name }}
+        {% endif %}
+    {% endfor %}
+    <input type="submit" value="変更">
+  </form>
+{% endblock %}

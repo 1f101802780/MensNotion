@@ -63,6 +63,9 @@
                 <img src="{{ post.image3.url }}" alt="" width="100px">
                 {% endif %}
             </div>
+            {% if post.user == request.user %}
+            <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
+            {% endif %}
         </div>
     </li>
     {% if user.is_authenticated %}
