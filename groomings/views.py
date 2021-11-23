@@ -24,13 +24,20 @@ def top(request):
 
 def search(request):
     posts = Post.objects.order_by('-created_at')
+    all_tags = Tag.objects.all()
+    check_tag_ids = []
     if request.GET.get('button') == "検索する":
         q_word = request.GET.get('query')
-        if request.GET.get('category') == "all":
+        if request.GET.get('category') == "all" :
             posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word)).order_by('-created_at')
         else:
             posts = posts.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word), category=request.GET.get('category')).order_by('-created_at')
-    return render(request, 'groomings/search.html', context={"posts": posts})
+        check_tag_ids = request.GET.getlist("tag")
+        check_tag_ids = [int(i) for i in check_tag_ids]
+        for tag_id in check_tag_ids:
+                posts = posts.filter(having_tags=tag_id).order_by('-created_at')
+
+    return render(request, 'groomings/search.html', context={"posts": posts, "tags": all_tags, "check_tag_ids": check_tag_ids})
 
 def user_login(request):
     """ログイン画面"""
