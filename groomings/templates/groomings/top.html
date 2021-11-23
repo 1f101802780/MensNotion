@@ -65,6 +65,7 @@
             </div>
             {% if post.user == request.user %}
             <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
+            <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
             {% endif %}
         </div>
     </li>

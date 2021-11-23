@@ -173,6 +173,16 @@ def post_edit(request, post_id):
     return render(request, 'groomings/edit_post.html', context={"edit_post_form": edit_post_form, "tags": tags, "post": post})
 
 @login_required
+def post_delete(request, post_id):
+    """投稿削除"""
+    post = request.user.user_post.all().filter(pk=post_id).first()
+    if not post:
+        return redirect('groomings:top')
+    post.delete()
+    messages.success(request, '投稿が削除されました')
+    return redirect('groomings:top')
+
+@login_required
 def question_detail(request, question_id):
     """匿名質問詳細ページ"""
     question = Question.objects.get(pk=question_id)

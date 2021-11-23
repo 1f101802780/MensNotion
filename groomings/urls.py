@@ -16,6 +16,7 @@ urlpatterns = [
     path(r'ranking/', views.ranking, name='ranking'), # ランキング用のページ
     path(r'post/<int:post_id>/', views.post_detail, name='post_detail'), # 投稿詳細ページ(<int:post_id>必要)
     path(r'post/edit/<int:post_id>/', views.post_edit, name='post_edit'), # 投稿編集ページ
+    path(r'post/delete/<int:post_id>/', views.post_delete, name='post_delete'), # 投稿削除
     # 匿名質問をするためのページ(<int:user_id>(質問する相手のid)必要)
     # 匿名質問に関するページ(自分にきた質問と自分がした質問を一覧表示)
     path(r'question/<int:question_id>/', views.question_detail, name='question_detail'), # 自分がしたかされた匿名質問の詳細ページ(<int:question_id>必要)
