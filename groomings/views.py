@@ -11,7 +11,7 @@ from groomings.models import User, Post, Comment, Question, Reply, Tag
 from django.contrib import messages
 from django.db.models import Count
 from django.db.models import Q
-
+import datetime
 
 def top(request):
     """トップ画面"""
@@ -153,16 +153,27 @@ def post_detail(request, post_id):
     post = Post.objects.get(pk=post_id)
     comme_form = forms.CommentForm(request.POST or None)
     if comme_form.is_valid():
-        if request.user.point > 40: # ログインユーザーのポイントが70より大きくなければコメントできない
+        if good_bad(request.user) > -10: # 1週間以内のコメントに対するbadがgood+10を上回るとコメできない
             comme_form.instance.user = request.user
             comme_form.instance.post = post
             comme_form.save()
             messages.success(request, 'コメントしました')
             return redirect('groomings:top')
         else:
-            messages.warning(request, '所持ポイントが足りません')
+            messages.warning(request, '週間bad数がgood数+10以上だとコメできません')
     comments = post.post_comment.all()
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form, "comments": comments})
+
+def good_bad(user):
+    my_commes = user.user_comment.all()
+    week_commes = my_commes.filter(created_at__gte = datetime.datetime.now() - datetime.timedelta(weeks=1))
+    num_good = 0
+    num_bad = 0
+    for comme in week_commes:
+        num_good += comme.favorite.count()
+        num_bad += comme.bad.count()
+    return num_good - num_bad
+
 
 @login_required
 def post_edit(request, post_id):
