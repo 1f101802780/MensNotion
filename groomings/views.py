@@ -209,18 +209,15 @@ def question_detail(request, question_id):
         return redirect('groomings:top')
     rep_form = forms.ReplyForm(request.POST or None, request.FILES or None)
     if rep_form.is_valid():
-        if request.user.point > 70 and question.recipient > 100:
-            rep_form.instance.question = question
-            rep_form.instance.giver = request.user
-            if question.giver == request.user:
-                rep_form.instance.recipient = question.recipient
-            else:
-                rep_form.instance.recipient = question.giver
-            rep_form.save()
-            messages.success(request, '返信しました')
-            return redirect('groomings:question_detail', question_id=question.id)
+        rep_form.instance.question = question
+        rep_form.instance.giver = request.user
+        if question.giver == request.user:
+            rep_form.instance.recipient = question.recipient
         else:
-            messages.warning('所持ポイントが足りません。もしくは回答者のポイントが足りていません')
+            rep_form.instance.recipient = question.giver
+        rep_form.save()
+        messages.success(request, '返信しました')
+        return redirect('groomings:question_detail', question_id=question.id)
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
 
