@@ -1,9 +1,37 @@
 {% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% load tag_event %}
 {% block title %}{{ page_owner.username }}のページ{% endblock %} <!-- タイトル -->
 
 {% block content %}
   <!-- bodyの中身 -->
-  <h1 >{{ page_owner.username }}さんのユーザーページです</h1>
+  <h1>{{ page_owner.username }}さんのユーザーページです</h1>
+  <div class="dropdown notify">
+    <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+        通知{{ notifys | count_unvisit }}
+    </button>
+    <!-- 選択肢 -->
+    <div class="dropdown-menu">
+      {% for notify in notifys %}
+        {% if notify.is_visited == False %} <!-- まだ見てない通知 -->
+          {% if notify.kind == "comment" %}
+          <a class="dropdown-item" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
+          {% elif notify.kind == "question" %}
+          <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
+          {% elif notify.kind == "reply" %}
+          <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
+          {% endif %}
+        {% else %} <!-- 既に見た通知 -->
+          {% if notify.kind == "comment" %}
+          <a class="dropdown-item visited" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
+          {% elif notify.kind == "question" %}
+          <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
+          {% elif notify.kind == "reply" %}
+          <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
   <div class="card-title">
     <p>ユーザー名: {{ page_owner.username }}</p>
     <p>ポイント数: {{ page_owner.point }}</p>

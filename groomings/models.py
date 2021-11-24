@@ -6,6 +6,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -169,3 +171,53 @@ class Tag(models.Model):
 
     class Meta:
         db_table = 'tag'
+
+class Notify(Date):
+    kind = models.CharField(max_length=20) # 通知の種類
+    notify_id = models.PositiveIntegerField()
+    user = models.ForeignKey(
+        'User', on_delete=models.CASCADE, related_name="user_notify"
+    )
+    from_user = models.ForeignKey(
+        'User', on_delete=models.SET_NULL, null=True, related_name="from_notify"
+    )
+    is_visited = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'notify'
+
+@receiver(post_save, sender=Comment)
+def comment_notify(sender, instance, **kwargs):
+    if instance.post.user != instance.user:
+        Notify.objects.create(
+            kind="comment", notify_id=instance.post.id, user=instance.post.user, from_user=instance.user
+        )
+    else:
+        pass
+
+@receiver(post_save, sender=Question)
+def question_notify(sender, instance, **kwargs):
+    Notify.objects.create(
+        kind="question", notify_id=instance.id, user=instance.recipient, from_user=instance.giver
+    )
+
+@receiver(post_save, sender=Reply)
+def reply_notify(sender, instance, **kwargs):
+    if instance.recipient:
+        Notify.objects.create(
+            kind="reply", notify_id=instance.question.id, user=instance.recipient, from_user=instance.giver
+        )
+    else:
+        pass
+
+@receiver(post_save, sender=Togiver)
+def togiver_notify(sender, instance, **kwargs):
+    Notify.objects.create(
+        kind="togiver_eval", notify_id=instance.gp_question.id, user=instance.gp_question.giver, from_user=instance.gp_question.recipient
+    )
+
+@receiver(post_save, sender=Torecipient)
+def torecipient_notify(sender, instance, **kwargs):
+    Notify.objects.create(
+        kind="torecipient_eval", notify_id=instance.rp_question.id, user=instance.rp_question.recipient, from_user=instance.rp_question.giver
+    )

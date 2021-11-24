@@ -30,3 +30,7 @@ def count_my_post(user):
 @register.filter(name="count_my_favo")
 def count_my_favo(user):
     return user.user_favo_post.all().count()
+
+@register.filter(nome="count_unvisit")
+def count_unvisit(notifys):
+    return notifys.filter(is_visited=False).count()

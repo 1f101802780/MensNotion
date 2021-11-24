@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
-from groomings.models import User, Post, Comment, Question, Reply, Tag
+from groomings.models import User, Post, Comment, Question, Reply, Tag, Notify
 from django.contrib import messages
 from django.db.models import Count
 from django.db.models import Q
@@ -85,7 +85,8 @@ def user(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all()
     posts = user.user_post.all()
-    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts})
+    notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts, "notifys": notifys})
 
 @login_required
 def user_favo(request, user_id):
@@ -93,7 +94,8 @@ def user_favo(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
-    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts})
+    notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "notifys": notifys})
 
 @login_required
 def edit_user(request):
@@ -161,6 +163,10 @@ def post_detail(request, post_id):
             return redirect('groomings:top')
         else:
             messages.warning(request, '週間bad数がgood数+10以上だとコメできません')
+    unvisited_comme_notifys = Notify.objects.filter(kind="comment", notify_id=post_id, user=request.user, is_visited=False)
+    for notify in unvisited_comme_notifys: # このポストについたコメントの通知をvisitedにする
+        notify.is_visited = True
+        notify.save()
     comments = post.post_comment.all()
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form, "comments": comments})
 
@@ -221,6 +227,10 @@ def question_detail(request, question_id):
         rep_form.save()
         messages.success(request, '返信しました')
         return redirect('groomings:question_detail', question_id=question.id)
+    unvisited_que_rep_notifys = Notify.objects.filter(kind__in=["question", "reply"], notify_id=question_id, user=request.user, is_visited=False)
+    for notify in unvisited_que_rep_notifys: # 匿名質問とリプライの通知をvisitedにする
+        notify.is_visited = True
+        notify.save()
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
 
@@ -257,7 +267,8 @@ def followee(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
-    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees})
+    notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees, "notifys": notifys})
 
 @login_required
 def follower(request, user_id):
@@ -265,7 +276,8 @@ def follower(request, user_id):
     user = User.objects.get(pk=user_id)
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followers = user.follower.all() # useridのユーザーのフォロワーたち
-    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers})
+    notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "notifys": notifys})
     
 @login_required
 def favorite(request, post_id):
