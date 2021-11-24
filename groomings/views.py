@@ -201,6 +201,10 @@ def post_delete(request, post_id):
     return redirect('groomings:top')
 
 @login_required
+def create_question(request):
+    """匿名質問を送るページ"""
+
+@login_required
 def question_detail(request, question_id):
     """匿名質問詳細ページ"""
     question = Question.objects.get(pk=question_id)
