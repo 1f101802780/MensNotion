@@ -11,7 +11,7 @@ from groomings.models import User, Post, Comment, Question, Reply, Tag
 from django.contrib import messages
 from django.db.models import Count
 from django.db.models import Q
-import datetime
+from datetime import datetime, timedelta
 
 def top(request):
     """トップ画面"""
@@ -166,14 +166,13 @@ def post_detail(request, post_id):
 
 def good_bad(user):
     my_commes = user.user_comment.all()
-    week_commes = my_commes.filter(created_at__gte = datetime.datetime.now() - datetime.timedelta(weeks=1))
+    week_commes = my_commes.filter(created_at__gte = datetime.now() - timedelta(weeks=1))
     num_good = 0
     num_bad = 0
     for comme in week_commes:
         num_good += comme.favorite.count()
         num_bad += comme.bad.count()
     return num_good - num_bad
-
 
 @login_required
 def post_edit(request, post_id):
@@ -220,7 +219,6 @@ def question_detail(request, question_id):
         return redirect('groomings:question_detail', question_id=question.id)
     replys = question.question_reply.all()
     return render(request, 'groomings/question_detail.html', context={"question": question, "form": rep_form, "replys": replys})
-
 
 @login_required
 def follow(request, user_id):

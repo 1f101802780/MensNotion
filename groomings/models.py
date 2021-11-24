@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # is_superuser(スーパーユーザーかどうか)もPermissionsMixinに書いてあるから書かない
     username = models.CharField(max_length=150)
     email = models.EmailField(max_length=255, unique=True)
-    image = models.FileField(upload_to='user_image/', null=True)
+    image = models.FileField(upload_to='user_image/', null=True, blank=True)
     point = models.IntegerField(default=50, validators=[MinValueValidator(0)])
     follow = models.ManyToManyField(
         'self', blank=True, symmetrical=False, related_name="follower"
@@ -102,13 +102,19 @@ class Comment(Date):
         db_table = 'comment'
 
 
+class Togiver(models.Model):
+    point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+
+class Torecipient(models.Model):
+    point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+
 class Question(Date):
     """匿名質問モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
     text = models.TextField(null=False, blank=False)
-    image1 = models.FileField(upload_to='question_image/', null=True)
-    image2 = models.FileField(upload_to='question_image/', null=True)
-    image3 = models.FileField(upload_to='question_image/', null=True)
+    image1 = models.FileField(upload_to='question_image/', null=True, blank=True)
+    image2 = models.FileField(upload_to='question_image/', null=True, blank=True)
+    image3 = models.FileField(upload_to='question_image/', null=True, blank=True)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     
     # 質問する人
@@ -121,15 +127,20 @@ class Question(Date):
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
     # 質問者への評価(5段階)
-    to_giver_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+    to_giver_point = models.OneToOneField(
+        Togiver,
+        on_delete=models.SET_NULL, null=True, related_name="gp_question"
+    )
     # 回答者への評価(5段階)
-    to_recipient_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
+    to_recipient_point = models.OneToOneField(
+        Torecipient,
+        on_delete=models.SET_NULL, null=True, related_name="rp_question"
+    )  
     # openかcloseか(質問者と回答者両方が評価するとclose)
     is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'question'
-
 
 class Reply(Date):
     """質問に対する返答モデル"""
@@ -138,12 +149,10 @@ class Reply(Date):
     question = models.ForeignKey(
         'Question', on_delete=CASCADE, related_name="question_reply"
     )
-
     # リプライした人
     giver = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_give_reply"
     )
-
     # リプライ受け取った人
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_reply"
