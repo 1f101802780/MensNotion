@@ -90,7 +90,7 @@ class Post(Date):
 
 class Comment(Date):
     """投稿に対するコメントモデル"""
-    text = models.TextField(null=False, blank=False)
+    text = models.CharField(max_length=255)
     user = models.ForeignKey(
         'User', on_delete=models.CASCADE, related_name="user_comment"
     )

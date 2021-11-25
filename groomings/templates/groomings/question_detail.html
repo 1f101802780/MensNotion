@@ -4,15 +4,27 @@
 
 {% block content %}
     <h1>{{ question.title }}の詳細ページ</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="radio" name="eval" value="1">1
-        <input type="radio" name="eval" value="2">2
-        <input type="radio" name="eval" value="3" checked>3
-        <input type="radio" name="eval" value="4">4
-        <input type="radio" name="eval" value="5">5
-        <input type="submit" name="button" value="評価する">
-    </form> 
+    {% if question.giver == request.user and question.to_recipient_point %}
+        <h3>{{ question.recipient.username }}に星{{ question.to_recipient_point }}の評価をしました。</h3>
+        {% if question.is_active == False %}
+            <h3>{{ question.recipient.username }}から星{{ question.to_giver_point }}の評価をされました。</h3>
+        {% endif %}
+    {% elif question.recipient == request.user and question.to_giver_point %}
+        <h3>{{ question.giver.username }}に星{{ question.to_giver_point }}の評価をしました。</h3>
+        {% if question.is_active == False %}
+            <h3>{{ question.giver.username }}から星{{ question.to_recipient_point }}の評価をされました。</h3>
+        {% endif %}
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="radio" name="eval" value="1">1
+            <input type="radio" name="eval" value="2">2
+            <input type="radio" name="eval" value="3" checked>3
+            <input type="radio" name="eval" value="4">4
+            <input type="radio" name="eval" value="5">5
+            <input type="submit" name="button" value="評価する">
+        </form>
+    {% endif %}
 
     <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
     {% if question.image1 %}
@@ -38,11 +50,12 @@
         </li>
         {% endfor %}
     </ul>
-
-    <h2>返信する</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="投稿">
-    </form>
+    {% if question.is_active == True %}
+        <h2>返信する</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="投稿">
+        </form>
+    {% endif %}
 {% endblock %}

@@ -233,7 +233,7 @@ def question_detail(request, question_id):
             return redirect('groomings:question_detail', question_id=question.id)
 
         if request.POST.get("button") == "評価する":
-            if question.recipient == request.user: # 自分が回答者の場合
+            if question.recipient == request.user and question.to_giver_point == None: # 自分が回答者の場合
                 question.to_giver_point = int(request.POST.get("eval"))
                 if question.giver:
                     Notify.objects.create(kind="togiver_eval", notify_id=question_id, user=question.giver, from_user=question.recipient)
@@ -241,7 +241,7 @@ def question_detail(request, question_id):
                     question.is_active = False
                 question.save()
                 messages.success(request, '質問者を評価しました')
-            else: # 自分が質問者の場合
+            elif question.giver == request.user and question.to_recipient_point == None: # 自分が質問者の場合
                 question.to_recipient_point = int(request.POST.get("eval"))
                 if question.recipient:
                     Notify.objects.create(kind="torecipient_eval", notify_id=question_id, user=question.recipient, from_user=question.giver)
@@ -249,6 +249,8 @@ def question_detail(request, question_id):
                     question.is_active = False
                 question.save()
                 messages.success(request, '回答者を評価しました')
+            else:
+                messages.warning(request, "既に評価済みです")
             return redirect('groomings:question_detail', question_id)
     else:
         messages.warning(request, "既にcloseの質問です")
