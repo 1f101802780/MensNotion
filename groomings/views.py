@@ -202,6 +202,9 @@ def post_delete(request, post_id):
     if not post:
         return redirect('groomings:top')
     post.delete()
+    notifys = Notify.objects.filter(kind="comment", notify_id=post_id)
+    for notify in notifys:
+        notify.delete()
     messages.success(request, '投稿が削除されました')
     return redirect('groomings:top')
 
