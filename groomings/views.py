@@ -220,17 +220,40 @@ def question_detail(request, question_id):
     if not request.user in question_users: # 匿名質問した人か答える人以外はtopへリダイレクト
         return redirect('groomings:top')
     rep_form = forms.ReplyForm(request.POST or None, request.FILES or None)
-    if rep_form.is_valid():
-        rep_form.instance.question = question
-        rep_form.instance.giver = request.user
-        if question.giver == request.user:
-            rep_form.instance.recipient = question.recipient
-        else:
-            rep_form.instance.recipient = question.giver
-        rep_form.save()
-        messages.success(request, '返信しました')
-        return redirect('groomings:question_detail', question_id=question.id)
-    unvisited_que_rep_notifys = Notify.objects.filter(kind__in=["question", "reply"], notify_id=question_id, user=request.user, is_visited=False)
+    if question.is_active == True:
+        if rep_form.is_valid():
+            rep_form.instance.question = question
+            rep_form.instance.giver = request.user
+            if question.giver == request.user:
+                rep_form.instance.recipient = question.recipient
+            else:
+                rep_form.instance.recipient = question.giver
+            rep_form.save()
+            messages.success(request, '返信しました')
+            return redirect('groomings:question_detail', question_id=question.id)
+
+        if request.POST.get("button") == "評価する":
+            if question.recipient == request.user: # 自分が回答者の場合
+                question.to_giver_point = int(request.POST.get("eval"))
+                if question.giver:
+                    Notify.objects.create(kind="togiver_eval", notify_id=question_id, user=question.giver, from_user=question.recipient)
+                if question.to_recipient_point:
+                    question.is_active = False
+                question.save()
+                messages.success(request, '質問者を評価しました')
+            else: # 自分が質問者の場合
+                question.to_recipient_point = int(request.POST.get("eval"))
+                if question.recipient:
+                    Notify.objects.create(kind="torecipient_eval", notify_id=question_id, user=question.recipient, from_user=question.giver)
+                if question.to_giver_point:
+                    question.is_active = False
+                question.save()
+                messages.success(request, '回答者を評価しました')
+            return redirect('groomings:question_detail', question_id)
+    else:
+        messages.warning(request, "既にcloseの質問です")
+
+    unvisited_que_rep_notifys = Notify.objects.filter(kind__in=["question", "reply", "togiver_eval", "torecipient_eval"], notify_id=question_id, user=request.user, is_visited=False)
     for notify in unvisited_que_rep_notifys: # 匿名質問とリプライの通知をvisitedにする
         notify.is_visited = True
         notify.save()

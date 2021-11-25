@@ -4,6 +4,16 @@
 
 {% block content %}
     <h1>{{ question.title }}の詳細ページ</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="radio" name="eval" value="1">1
+        <input type="radio" name="eval" value="2">2
+        <input type="radio" name="eval" value="3" checked>3
+        <input type="radio" name="eval" value="4">4
+        <input type="radio" name="eval" value="5">5
+        <input type="submit" name="button" value="評価する">
+    </form> 
+
     <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
     {% if question.image1 %}
     <img src="{{ question.image1.url }}" width="200">

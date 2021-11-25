@@ -103,13 +103,6 @@ class Comment(Date):
     class Meta:
         db_table = 'comment'
 
-
-class Togiver(models.Model):
-    point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
-
-class Torecipient(models.Model):
-    point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
-
 class Question(Date):
     """匿名質問モデル"""
     title = models.CharField(max_length=30, null=True, blank=True)
@@ -129,15 +122,9 @@ class Question(Date):
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
     # 質問者への評価(5段階)
-    to_giver_point = models.OneToOneField(
-        Togiver,
-        on_delete=models.SET_NULL, null=True, related_name="gp_question"
-    )
+    to_giver_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
     # 回答者への評価(5段階)
-    to_recipient_point = models.OneToOneField(
-        Torecipient,
-        on_delete=models.SET_NULL, null=True, related_name="rp_question"
-    )  
+    to_recipient_point = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=True)
     # openかcloseか(質問者と回答者両方が評価するとclose)
     is_active = models.BooleanField(default=True)
 
@@ -197,9 +184,13 @@ def comment_notify(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Question)
 def question_notify(sender, instance, **kwargs):
-    Notify.objects.create(
-        kind="question", notify_id=instance.id, user=instance.recipient, from_user=instance.giver
-    )
+    notify = Notify.objects.filter(kind="question", notify_id=instance.id)
+    if (not notify) and (instance.recipient):
+        Notify.objects.create(
+            kind="question", notify_id=instance.id, user=instance.recipient, from_user=instance.giver
+        )
+    else:
+        pass
 
 @receiver(post_save, sender=Reply)
 def reply_notify(sender, instance, **kwargs):
@@ -210,14 +201,14 @@ def reply_notify(sender, instance, **kwargs):
     else:
         pass
 
-@receiver(post_save, sender=Togiver)
-def togiver_notify(sender, instance, **kwargs):
-    Notify.objects.create(
-        kind="togiver_eval", notify_id=instance.gp_question.id, user=instance.gp_question.giver, from_user=instance.gp_question.recipient
-    )
+# @receiver(post_save, sender=Togiver)
+# def togiver_notify(sender, instance, **kwargs):
+#     Notify.objects.create(
+#         kind="togiver_eval", notify_id=instance.question.id, user=instance.question.giver, from_user=instance.question.recipient
+#     )
 
-@receiver(post_save, sender=Torecipient)
-def torecipient_notify(sender, instance, **kwargs):
-    Notify.objects.create(
-        kind="torecipient_eval", notify_id=instance.rp_question.id, user=instance.rp_question.recipient, from_user=instance.rp_question.giver
-    )
+# @receiver(post_save, sender=Torecipient)
+# def torecipient_notify(sender, instance, **kwargs):
+#     Notify.objects.create(
+#         kind="torecipient_eval", notify_id=instance.question.id, user=instance.question.recipient, from_user=instance.question.giver
+#     )
