@@ -4,29 +4,63 @@
 
 {% block content %}
   <!-- bodyの中身 -->
-  <h1>ユーザーランキング</h1>
-{% for userrank in users %}
-    <div class="userrank card">
-      <div class="card-header">
-        ユーザー名：{{ userrank.username }}
+  <div class="row">
+    <div class="col-md-4">
+      <h1>ポイントランキング</h1>
+      {% for userrank in points %}
+        <div class="userrank card">
+          <div class="card-header">
+            ユーザー名：{{ userrank.username }}
+          </div>
+          <div class="body">
+            ユーザーポイント：{{ userrank.point}}
+          </div>
+        </div>
+      {% endfor %}
       </div>
-      <div class="body">
-        ユーザーポイント：{{ userrank.point}}
-      </div>
+
+    <div class="col-md-4">
+      <h1>フォロワーランキング</h1>
+      {% for follower in followers %}
+        <div class="userrank card">
+          <div class="card-header">
+            ユーザー名：{{ follower.username }}
+          </div>
+          <div class="body">
+            フォロワー：{{ follower.follower.count }}
+          </div>
+        </div>
+      {% endfor %}
     </div>
-    <br>
-  {% endfor %}
-  <h1>いいね数ランキング</h1>
-{% for point in points %}
-    <div class="point card">
-      <div class="card-header">
-        {{ point.title }}
-      </div>
-      <div class="body">
-        <p class="small">ユーザー名：{{ point.user.username }} &nbsp; | &nbsp; いいね数：{{ point | count_favo }}</p>
-        <p>{{ point.text }}</p>
-      </div>
+
+    <div class="col-md-4">
+      <h1>もらった匿名質問数ランキング</h1>
+      {% for que in num_que %}
+        <div class="userrank card">
+          <div class="card-header">
+            ユーザー名：{{ que.username }}
+          </div>
+          <div class="body">
+            総被質問数：{{ que.user_receive_question.count }}
+            内解決済み：{{ que | count_nonactive }}
+          </div>
+        </div>
+      {% endfor %}
     </div>
-    <br>
-  {% endfor %}
+
+    <div class="col-md-4">
+      <h1>いいね数ランキング</h1>
+      {% for point in goods %}
+        <div class="point card">
+          <div class="card-header">
+            {{ point.title }}
+          </div>
+          <div class="body">
+            <p class="small">ユーザー名：{{ point.user.username }} &nbsp; | &nbsp; いいね数：{{ point | count_favo }}</p>
+            <p>{{ point.text }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+</div>
 {% endblock %}

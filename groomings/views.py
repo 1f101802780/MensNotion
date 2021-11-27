@@ -145,9 +145,12 @@ def create_post(request): # user_id)
 
 def ranking(request):
     """ランキング用のページ"""
-    users = User.objects.order_by('-point')
+    points = User.objects.order_by('-point')[:10]
+    follower = User.objects.annotate(num_follower=Count('follower')).order_by('-num_follower')[:10]
+    num_que = User.objects.annotate(num_que=Count('user_receive_question')).order_by('-num_que')[:10]
+    
     post_orderby_favo = Post.objects.annotate(num_favo=Count('favorite')).order_by('-num_favo')[:10]
-    return render(request, 'groomings/ranking.html',context={"users": users,"points":post_orderby_favo}) # , 'id': user_id})
+    return render(request, 'groomings/ranking.html',context={"points": points, "followers": follower, "num_que": num_que, "goods": post_orderby_favo}) # , 'id': user_id})
 
 @login_required
 def post_detail(request, post_id):

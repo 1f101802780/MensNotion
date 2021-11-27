@@ -5,6 +5,7 @@
 {% block content %}
   <!-- bodyの中身 -->
   <h1>{{ page_owner.username }}さんのユーザーページです</h1>
+  {% if page_owner == request.user %}
   <div class="dropdown notify">
     <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
         通知{{ notifys | count_unvisit }}
@@ -36,6 +37,8 @@
       {% endfor %}
     </div>
   </div>
+  {% endif %}
+
   <div class="card-title">
     <p>ユーザー名: {{ page_owner.username }}</p>
     <p>ポイント数: {{ page_owner.point }}</p>

@@ -31,6 +31,10 @@ def count_my_post(user):
 def count_my_favo(user):
     return user.user_favo_post.all().count()
 
-@register.filter(nome="count_unvisit")
+@register.filter(name="count_unvisit")
 def count_unvisit(notifys):
     return notifys.filter(is_visited=False).count()
+
+@register.filter(name="count_nonactive")
+def count_nonactive(user):
+    return user.user_receive_question.filter(is_active=False).count()

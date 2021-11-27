@@ -10,8 +10,43 @@
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
-        <a href="{% url 'groomings:top' %}">トップへ</a>
         <!-- ナビゲーションバー -->
+        <header class="mb-4">
+            <nav class="navbar navbar-expand-sm navbar-light bg-light">
+                <!-- ホームへ戻るリンク。ブランドロゴなどを置く。 -->
+                <a href="{% url 'groomings:top' %}" class="navbar-brand">Groomings(仮)</a>
+
+                <!-- 横幅が狭いときに出るハンバーガーボタン -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#nav-bar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- メニュー項目 -->
+                <div class="collapse navbar-collapse" id="nav-bar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a href="{% url 'groomings:ranking' %}" class="nav-link active">ランキング</a></li>
+                        <li class="nav-item"><a href="{% url 'groomings:search' %}" class="nav-link">検索</a></li>
+                        <li class="nav-item dropdown">
+                            {% if request.user.is_authenticated %}
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ request.user.username }}</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'groomings:user' request.user.id %}">マイページ</a>
+                                <a class="dropdown-item" href="{% url 'groomings:edit_user' %}">ユーザー情報変更</a>
+                                <a class="dropdown-item" href="{% url 'groomings:change_password' %}">パスワード変更</a>
+                                <a class="dropdown-item" href="{% url 'groomings:logout' %}">ログアウト</a>
+                            </div>
+                            {% else %}
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">会員機能</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'groomings:login' %}">ログイン</a>
+                                <a class="dropdown-item" href="{% url 'groomings:signup' %}">新規登録</a>
+                            </div>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
 
         <div class="container">
             <!-- messageの表示 -->
@@ -26,5 +61,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
     </body>
 </html>

@@ -3,83 +3,60 @@
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
 {% block content %}
-{% if user.is_authenticated %}
-  <p>ログインしてます</p>
-  <p>ログインユーザー:{{ request.user.username }}</p>
-  <ul>
-    <li><a href="{% url 'groomings:user' request.user.id %}">マイページ</a></li>
-    <li><a href="{% url 'groomings:create_post' %}">投稿</a></li>
-    <li><a href="{% url 'groomings:edit_user' %}">プロフィール編集</a></li>
-    <li><a href="{% url 'groomings:change_password' %}">パスワード変更</a></li>
-    <li><a href="{% url 'groomings:logout' %}">ログアウト</a></li>
-  </ul>
-{% else %}
-  <p>ログインしてません</p>
-  <a href="{% url 'groomings:login' %}">ログイン</a>
-{% endif %}
-<h2>url一覧</h2>
-<ul>
-  <li><a href="{% url 'groomings:signup' %}">新規登録</a></li>
-  <li><a href="{% url 'groomings:user_favo' 1 %}">ユーザid1のファボページ</a></li>
-  <li><a href="{% url 'groomings:ranking' %}">ランキング</a></li>
-  <li><a href="{% url 'groomings:post_detail' 1 %}">投稿id1の投稿詳細ページ(ログインユーザー以外エラー)</a></li>
-  <li><a href="{% url 'groomings:search' %}">検索</a></li>
-  <li><a href="{% url 'groomings:question_detail' 1 %}">匿名質問id1の匿名質問詳細ページ(質問関係者以外はtopにリダイレクト)</a></li>
-</ul>
-  <!-- bodyの中身 -->
-  <h1>Grooming</h1>
-  <p class= "alert alert-success">男性の身だしなみを評価するアプリです。</p>
-
-  {% if not posts %}
-  <h5>表示する投稿がありません。ユーザーをフォローしましょう。</h5>
-  {% endif %}
-
-  <ul class="list-unstyled">
-    {% for post in posts %}
-    <li class="media mb-3 post">
-        {% if post.user.image %}
-        <img src="{{ post.user.image.url }}" width="40px">
-        {% else %}
-        <img src="/media/static/default.png" width="40px">
-        {% endif %}
-        <div class="media-body">
-            <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
-            <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
-            <span class="text-muted">{{ post.created_at }}</span><br>
-            {% for tag in post.having_tags.all %}
-            <span class="badge badge-primary">{{ tag.name }}</span>
-            {% endfor %}
-            <div>
-                {{ post.text }}
-            </div>
-            <div class="post_image">
-                {% if post.image1 %}
-                <img src="{{ post.image1.url }}" alt="" width="100px">
-                {% endif %}
-                {% if post.image2 %}
-                <img src="{{ post.image2.url }}" alt="" width="100px">
-                {% endif %}
-                {% if post.image3 %}
-                <img src="{{ post.image3.url }}" alt="" width="100px">
-                {% endif %}
-            </div>
-            {% if post.user == request.user %}
-            <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
-            <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
-            {% endif %}
-        </div>
-    </li>
-    {% if user.is_authenticated %}
-        {% if request.user in post.favorite.all %}
-        <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
-        {% else %}
-        <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
-        {% endif %}
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    {% if not posts %}
+    <h5>表示する投稿がありません。ユーザーをフォローしましょう。</h5>
     {% endif %}
-    {% if user.is_authenticated %}
-        <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
-    {% endif %}
-    <hr>
-    {% endfor %}
-</ul>
+
+    <ul class="list-unstyled">
+      {% for post in posts %}
+      <li class="media mb-3 post">
+          {% if post.user.image %}
+          <img src="{{ post.user.image.url }}" width="40px">
+          {% else %}
+          <img src="/media/static/default.png" width="40px">
+          {% endif %}
+          <div class="media-body">
+              <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
+              <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
+              <span class="text-muted">{{ post.created_at }}</span><br>
+              {% for tag in post.having_tags.all %}
+              <span class="badge badge-primary">{{ tag.name }}</span>
+              {% endfor %}
+              <div>
+                  {{ post.text }}
+              </div>
+              <div class="post_image">
+                  {% if post.image1 %}
+                  <img src="{{ post.image1.url }}" alt="" width="100px">
+                  {% endif %}
+                  {% if post.image2 %}
+                  <img src="{{ post.image2.url }}" alt="" width="100px">
+                  {% endif %}
+                  {% if post.image3 %}
+                  <img src="{{ post.image3.url }}" alt="" width="100px">
+                  {% endif %}
+              </div>
+              {% if post.user == request.user %}
+              <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
+              <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
+              {% endif %}
+          </div>
+      </li>
+      {% if user.is_authenticated %}
+          {% if request.user in post.favorite.all %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% else %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% endif %}
+      {% endif %}
+      {% if user.is_authenticated %}
+          <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
+      {% endif %}
+      <hr>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}

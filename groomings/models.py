@@ -112,12 +112,12 @@ class Question(Date):
     image3 = models.FileField(upload_to='question_image/', null=True, blank=True)
     give_point = models.IntegerField(blank=False, null=False, default=5, validators=[MinValueValidator(5)])
     
-    # 質問する人
+    # 質問者
     giver = models.ForeignKey(
         'User', on_delete=CASCADE, related_name="user_give_question"
     )
 
-    # 質問される人
+    # 回答者
     recipient = models.ForeignKey(
         'User', on_delete=SET_NULL, null=True, related_name="user_receive_question"
     )
