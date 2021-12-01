@@ -4,3 +4,6 @@ h1{
 .dropdown-menu .visited{
     color: gray;
 }
+.bg-danger, .bg-info{
+    color: white;
+}

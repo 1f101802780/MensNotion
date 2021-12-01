@@ -6,50 +6,85 @@
   <!-- bodyの中身 -->
   <div class="row">
     <div class="col-md-4">
-      <h1>ポイントランキング</h1>
+      <h2>ポイントランキング</h2>
       {% for userrank in points %}
-        <div class="userrank card">
+       <div class="card">
           <div class="card-header">
-            ユーザー名：{{ userrank.username }}
+            <h3>{{ forloop.counter }}位</h3>
+            {% if userrank.image %}
+              <img src="{{ userrank.image.url }}" alt="" width="30px">
+            {% else %}
+              <img src="/media/static/default.png" alt="" width="30px">
+            {% endif %}
+            <a href="{% url 'groomings:user' userrank.id  %}">{{ userrank.username }}</a>
           </div>
-          <div class="body">
-            ユーザーポイント：{{ userrank.point}}
+    
+          <div class="card-body">
+            <p>ポイント数: {{ userrank.point }}</p>
+            {% if user.is_authenticated %}
+              {% if userrank != request.user %}
+                <br><a href="#">このユーザーに匿名質問をする</a>
+              {% endif %}
+            {% endif %}
           </div>
         </div>
       {% endfor %}
-      </div>
+    </div>
 
     <div class="col-md-4">
-      <h1>フォロワーランキング</h1>
+      <h2>フォロワーランキング</h2>
       {% for follower in followers %}
-        <div class="userrank card">
+        <div class="card">
           <div class="card-header">
-            ユーザー名：{{ follower.username }}
+            <h3>{{ forloop.counter }}位</h3>
+            {% if follower.image %}
+              <img src="{{ follower.image.url }}" alt="" width="30px">
+            {% else %}
+              <img src="/media/static/default.png" alt="" width="30px">
+            {% endif %}
+            <a href="{% url 'groomings:user' follower.id  %}">{{ follower.username }}</a>
           </div>
-          <div class="body">
-            フォロワー：{{ follower.follower.count }}
+    
+          <div class="card-body">
+            <p>フォロワー数: {{ follower.follower.count }}</p>
+            {% if user.is_authenticated %}
+              {% if follower != request.user %}
+                <br><a href="#">このユーザーに匿名質問をする</a>
+              {% endif %}
+            {% endif %}
           </div>
         </div>
       {% endfor %}
     </div>
 
     <div class="col-md-4">
-      <h1>もらった匿名質問数ランキング</h1>
+      <h2>もらった匿名質問数ランキング</h2>
       {% for que in num_que %}
-        <div class="userrank card">
+        <div class="card">
           <div class="card-header">
-            ユーザー名：{{ que.username }}
+            <h3>{{ forloop.counter }}位</h3>
+            {% if que.image %}
+              <img src="{{ que.image.url }}" alt="" width="30px">
+            {% else %}
+              <img src="/media/static/default.png" alt="" width="30px">
+            {% endif %}
+            <a href="{% url 'groomings:user' que.id  %}">{{ que.username }}</a>
           </div>
-          <div class="body">
-            総被質問数：{{ que.user_receive_question.count }}
-            内解決済み：{{ que | count_nonactive }}
+    
+          <div class="card-body">
+            <p>総被匿名質問数: {{ que.user_receive_question.count }} →内解決済み： {{ que | count_nonactive }}</p>
+            {% if user.is_authenticated %}
+              {% if que != request.user %}
+                <br><a href="#">このユーザーに匿名質問をする</a>
+              {% endif %}
+            {% endif %}
           </div>
         </div>
       {% endfor %}
     </div>
 
     <div class="col-md-4">
-      <h1>いいね数ランキング</h1>
+      <h2>いいね数ランキング</h2>
       {% for point in goods %}
         <div class="point card">
           <div class="card-header">

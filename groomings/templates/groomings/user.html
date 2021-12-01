@@ -9,18 +9,54 @@
     <li class="nav-item"><a href="{% url 'groomings:follower' page_owner.id %}" class="nav-link">フォロワー<span class="badge badge-info">{{ page_owner | count_follower }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:user_favo' page_owner.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ page_owner | count_my_favo }}</span></a></li>
   </ul>
-  {% for post in posts %}
-    <div class="post card">
-      <div class="card-header">
-        {{ post.title }}
-        <small>{{ post.user.username }}</small>
-      </div>
-      <div class="body">
-        <p class="small">{{ post.created_at }} | カテゴリー：{{ post.category }}</p>
-        <p>{{ post.text }}</p>
-        <button class="btn btn-primary">お気に入り<span class="badge badge-light">{{ post | count_favo }}</span></button>
-      </div>
-    </div>
-  {% endfor %}
+  
+  <ul class="list-unstyled">
+    {% for post in posts %}
+      <li class="media mb-3 post">
+          {% if post.user.image %}
+          <img src="{{ post.user.image.url }}" width="40px">
+          {% else %}
+          <img src="/media/static/default.png" width="40px">
+          {% endif %}
+          <div class="media-body">
+              <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
+              <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
+              <span class="text-muted">{{ post.created_at }}</span><br>
+              {% for tag in post.having_tags.all %}
+              <span class="badge badge-primary">{{ tag.name }}</span>
+              {% endfor %}
+              <div>
+                  {{ post.text }}
+              </div>
+              <div class="post_image">
+                  {% if post.image1 %}
+                  <img src="{{ post.image1.url }}" alt="" width="100px">
+                  {% endif %}
+                  {% if post.image2 %}
+                  <img src="{{ post.image2.url }}" alt="" width="100px">
+                  {% endif %}
+                  {% if post.image3 %}
+                  <img src="{{ post.image3.url }}" alt="" width="100px">
+                  {% endif %}
+              </div>
+              {% if post.user == request.user %}
+              <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
+              <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
+              {% endif %}
+          </div>
+      </li>
+      {% if request.user.is_authenticated %}
+          {% if request.user in post.favorite.all %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% else %}
+          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          {% endif %}
+      {% endif %}
+      {% if request.user.is_authenticated %}
+          <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
+      {% endif %}
+      <hr>
+    {% endfor %}
+  </ul>
 {% endblock %}
   

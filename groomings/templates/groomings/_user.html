@@ -4,53 +4,68 @@
 
 {% block content %}
   <!-- bodyの中身 -->
-  <h1>{{ page_owner.username }}さんのユーザーページです</h1>
-  {% if page_owner == request.user %}
-  <div class="dropdown notify">
-    <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-        通知{{ notifys | count_unvisit }}
-    </button>
-    <!-- 選択肢 -->
-    <div class="dropdown-menu">
-      {% for notify in notifys %}
-        {% if notify.is_visited == False %} <!-- まだ見てない通知 -->
-          {% if notify.kind == "comment" %}
-          <a class="dropdown-item" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
-          {% elif notify.kind == "question" %}
-          <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
-          {% elif notify.kind == "reply" %}
-          <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
-          {% else %} <!--匿名質問への評価の通知 -->
-          <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}が匿名質問に評価しました</a>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          {% if page_owner.image %}
+            <img src="{{ page_owner.image.url }}" alt="" width="60px">
+          {% else %}
+            <img src="/media/static/default.png" alt="" width="60px">
           {% endif %}
-        {% else %} <!-- 既に見た通知 -->
-          {% if notify.kind == "comment" %}
-          <a class="dropdown-item visited" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
-          {% elif notify.kind == "question" %}
-          <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
-          {% elif notify.kind == "reply" %}
-          <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
-          {% else %} <!--匿名質問への評価の通知 -->
-          <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}が匿名質問に評価しました</a>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
+          <h2>{{ page_owner.username }}</h2>
 
-  <div class="card-title">
-    <p>ユーザー名: {{ page_owner.username }}</p>
-    <p>ポイント数: {{ page_owner.point }}</p>
-    {% if page_owner != request.user %}
-      {% if page_owner in my_follows %}
-      <a href="{% url 'groomings:unfollow' page_owner.id %}" class="btn btn-outline-danger">フォロー解除</a>
-      {% else %}
-      <a href="{% url 'groomings:follow' page_owner.id %}" class="btn btn-outline-info">フォローする</a>
-      {% endif %}
-    {% endif %}
-  </div>
-  <div>
-    {% block posts %}{% endblock %}
+          <!-- マイページの場合、通知一覧を表示 -->
+          {% if page_owner == request.user %}
+            <div class="dropdown notify">
+              <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+                  通知{{ notifys | count_unvisit }}
+              </button>
+              <!-- 選択肢 -->
+              <div class="dropdown-menu">
+                {% for notify in notifys %}
+                  {% if notify.is_visited == False %} <!-- まだ見てない通知 -->
+                    {% if notify.kind == "comment" %}
+                    <a class="dropdown-item" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
+                    {% elif notify.kind == "question" %}
+                    <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
+                    {% elif notify.kind == "reply" %}
+                    <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
+                    {% else %} <!--匿名質問への評価の通知 -->
+                    <a class="dropdown-item" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}が匿名質問に評価しました</a>
+                    {% endif %}
+                  {% else %} <!-- 既に見た通知 -->
+                    {% if notify.kind == "comment" %}
+                    <a class="dropdown-item visited" href="{% url 'groomings:post_detail' notify.notify_id %}">{{ notify.from_user.username }}からコメントが来ました</a>
+                    {% elif notify.kind == "question" %}
+                    <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問が来ました</a>
+                    {% elif notify.kind == "reply" %}
+                    <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}から匿名質問にリプライが来ました</a>
+                    {% else %} <!--匿名質問への評価の通知 -->
+                    <a class="dropdown-item visited" href="{% url 'groomings:question_detail' notify.notify_id %}">{{ notify.from_user.username }}が匿名質問に評価しました</a>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <p>ポイント数: {{ page_owner.point }}</p>
+          {% if page_owner != request.user %}
+            {% if page_owner in my_follows %}
+            <a href="{% url 'groomings:unfollow' page_owner.id %}" class="btn btn-outline-danger">フォロー解除</a>
+            {% else %}
+            <a href="{% url 'groomings:follow' page_owner.id %}" class="btn btn-outline-info">フォローする</a>
+            {% endif %}
+            <br><a href="#">このユーザーに匿名質問をする</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-8">
+      {% block posts %}{% endblock %}
+    </div>
   </div>
 {% endblock %}

@@ -3,73 +3,88 @@
 {% block title %}投稿を探す{% endblock %}
 
 {% block content %}
-    <form method="get">
-        {% csrf_token %}
-        <input name="query" value="{{ request.GET.query }}" type="search">
-        <hr>
-        <input type="radio" name="category" value="all" checked="checked">全てのカテゴリーから検索
-        <input type="radio" name="category" value="skincare" {% if request.GET.category == 'skincare' %}checked="checked"{% endif %}>スキンケアの投稿から検索
-        <input type="radio" name="category" value="make" {% if request.GET.category == 'make' %}checked="checked"{% endif %}>メイクの投稿から検索
-        <input type="radio" name="category" value="hair" {% if request.GET.category == 'hair' %}checked="checked"{% endif %}>ヘアーの投稿から検索
-        <input type="radio" name="category" value="fashion" {% if request.GET.category == 'fashion' %}checked="checked"{% endif %}>服装の投稿から検索
-        <input type="radio" name="category" value="others" {% if request.GET.category == 'others' %}checked="checked"{% endif %}>その他の投稿から検索
-        <hr>
-        {% for tag in tags %}
-        {% if tag.id in check_tag_ids %}
-        <input type="checkbox" name="tag" value="{{ tag.id }}" checked>{{ tag.name }}
-        {% else %}
-        <input type="checkbox" name="tag" value="{{ tag.id }}">{{ tag.name }}
-        {% endif %}
-        {% endfor %}
-        <input type="submit" name="button" value="検索する">
-    </form>
-
-    <ul class="list-unstyled">
-        {% for post in posts %}
-        <li class="media mb-3 post">
-            {% if post.user.image %}
-            <img src="{{ post.user.image.url }}" width="40px">
-            {% else %}
-            <img src="/media/static/default.png" width="40px">
-            {% endif %}
-            <div class="media-body">
-                <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
-                <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
-                <span class="text-muted">{{ post.created_at }}</span><br>
-                {% for tag in post.having_tags.all %}
-                <span class="badge badge-primary">{{ tag.name }}</span>
-                {% endfor %}
-                <div>
-                    {{ post.text }}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    検索
                 </div>
-                <div class="post_image">
-                    {% if post.image1 %}
-                    <img src="{{ post.image1.url }}" alt="" width="100px">
-                    {% endif %}
-                    {% if post.image2 %}
-                    <img src="{{ post.image2.url }}" alt="" width="100px">
-                    {% endif %}
-                    {% if post.image3 %}
-                    <img src="{{ post.image3.url }}" alt="" width="100px">
-                    {% endif %}
+                <div class="card-body">
+                    <form method="get">
+                        {% csrf_token %}
+                        <input name="query" value="{{ request.GET.query }}" type="search" class="form-control">
+                        <hr>
+                        <h5>カテゴリー</h5>
+                        <label><input type="radio" name="category" value="all" checked="checked">全てのカテゴリーから検索</label>
+                        <label><input type="radio" name="category" value="skincare" {% if request.GET.category == 'skincare' %}checked="checked"{% endif %}>スキンケアの投稿から検索</label>
+                        <label><input type="radio" name="category" value="make" {% if request.GET.category == 'make' %}checked="checked"{% endif %}>メイクの投稿から検索</label>
+                        <label><input type="radio" name="category" value="hair" {% if request.GET.category == 'hair' %}checked="checked"{% endif %}>ヘアーの投稿から検索</label>
+                        <label><input type="radio" name="category" value="fashion" {% if request.GET.category == 'fashion' %}checked="checked"{% endif %}>服装の投稿から検索</label>
+                        <label><input type="radio" name="category" value="others" {% if request.GET.category == 'others' %}checked="checked"{% endif %}>その他の投稿から検索</label>
+                        <hr>
+                        <h5>タグ</h5>
+                        {% for tag in tags %}
+                        {% if tag.id in check_tag_ids %}
+                        <input type="checkbox" name="tag" value="{{ tag.id }}" checked>{{ tag.name }}
+                        {% else %}
+                        <input type="checkbox" name="tag" value="{{ tag.id }}">{{ tag.name }}
+                        {% endif %}
+                        {% endfor %}
+                        <input type="submit" name="button" value="検索する" class="btn btn-outline-info">
+                    </form>
                 </div>
-                {% if post.user == request.user %}
-                <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
-                <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
-                {% endif %}
             </div>
-        </li>
-        {% if user.is_authenticated %}
-            {% if request.user in post.favorite.all %}
-            <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
-            {% else %}
-            <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
-            {% endif %}
-        {% endif %}
-        {% if user.is_authenticated %}
-            <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
-        {% endif %}
-        <hr>
-        {% endfor %}
-    </ul>
+        </div>
+
+        <div class="col-md-7">
+            <ul class="list-unstyled">
+                {% for post in posts %}
+                <li class="media mb-3 post">
+                    {% if post.user.image %}
+                    <img src="{{ post.user.image.url }}" width="40px">
+                    {% else %}
+                    <img src="/media/static/default.png" width="40px">
+                    {% endif %}
+                    <div class="media-body">
+                        <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
+                        <a href="{% url 'groomings:user' post.user.id %}">＠{{ post.user.username }}</a>
+                        <span class="text-muted">{{ post.created_at }}</span><br>
+                        {% for tag in post.having_tags.all %}
+                        <span class="badge badge-primary">{{ tag.name }}</span>
+                        {% endfor %}
+                        <div>
+                            {{ post.text }}
+                        </div>
+                        <div class="post_image">
+                            {% if post.image1 %}
+                            <img src="{{ post.image1.url }}" alt="" width="100px">
+                            {% endif %}
+                            {% if post.image2 %}
+                            <img src="{{ post.image2.url }}" alt="" width="100px">
+                            {% endif %}
+                            {% if post.image3 %}
+                            <img src="{{ post.image3.url }}" alt="" width="100px">
+                            {% endif %}
+                        </div>
+                        {% if post.user == request.user %}
+                        <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
+                        <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% if user.is_authenticated %}
+                    {% if request.user in post.favorite.all %}
+                    <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+                    {% else %}
+                    <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
+                    {% endif %}
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
+                {% endif %}
+                <hr>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endblock %}
