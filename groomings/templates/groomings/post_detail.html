@@ -3,31 +3,47 @@
 {% block title %}投稿詳細ページ{% endblock %} <!-- タイトル -->
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.text }}</p>
-
-    <h2>コメントする</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="送信">
-    </form>
-
-    <h3>コメント一覧</h3>
-    <div class="all-comment">
-        {% for comment in comments %}
-        <p>{{ comment.user.username }}｜{{ comment.text }}</p>
-            {% if request.user in comment.favorite.all %}
-            <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-danger">いいね解除<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
-            {% else %}
-            <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-outline-danger">いいね<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
-            {% endif %}
-            
-            {% if request.user in comment.bad.all %}
-            <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-dark">バッド解除<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
-            {% else %}
-            <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-outline-dark">バッド<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
-            {% endif %}
-        {% endfor %}
+<div class="card">
+    <div class="card-header">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.text }}</p>
+        {% if post.image1 %}
+        <img src="{{ post.image1.url }}" alt="" width="200px">
+        {% endif %}
+        {% if post.image2 %}
+        <img src="{{ post.image2.url }}" alt="" width="200px">
+        {% endif %}
+        {% if post.image3 %}
+        <img src="{{ post.image3.url }}" alt="" width="200px">
+        {% endif %}
     </div>
+    <div class="card-body">
+        <h4>コメントする</h4>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="送信">
+        </form>
+
+        <h4>コメント一覧</h4>
+        <div class="all-comment">
+            {% for comment in comments %}
+            <div class="alert alert-info">
+                <p>{{ comment.user.username }}｜{{ comment.text }}</p>
+                    {% if request.user in comment.favorite.all %}
+                    <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-danger">いいね解除<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
+                    {% else %}
+                    <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-outline-danger">いいね<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>
+                    {% endif %}
+                    
+                    {% if request.user in comment.bad.all %}
+                    <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-dark">バッド解除<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
+                    {% else %}
+                    <a href="{% url 'groomings:bad_comme' comment.id %}" class="btn btn-outline-dark">バッド<span class="badge badge-light">{{ comment | count_commebad }}</span></a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>    
 {% endblock %}
