@@ -12,6 +12,9 @@ from django.contrib import messages
 from django.db.models import Count
 from django.db.models import Q
 from datetime import datetime, timedelta
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 
 def top(request):
     """トップ画面"""
@@ -212,8 +215,26 @@ def post_delete(request, post_id):
     return redirect('groomings:top')
 
 @login_required
-def create_question(request):
+def create_question(request, user_id):
     """匿名質問を送るページ"""
+    recipient = User.objects.get(pk = user_id)
+    form = forms.QuestionForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        if recipient.point > 100 and request.user.point > 20: # 1週間以内のコメントに対するbadがgood+10を上回るとコメできない
+            form.instance.recipient = recipient
+            form.instance.giver = request.user
+            form.save()
+            messages.success(request, '質問しました')
+            return redirect('groomings:top')
+        else:
+           messages.warning(request, '相手または自分の所持ポイントが足りません')
+    # unvisited_comme_notifys = Notify.objects.filter(kind="question", notify_id=instance.id, user=recipient, from_user=giver)
+    # for notify in unvisited_comme_notifys: # このポストについたコメントの通知をvisitedにする
+    #     notify.is_visited = True
+    #     notify.save()
+    #comments = post.post_comment.all()
+    return render(request, 'groomings/create_question.html', context={"form": form, "recipient": recipient})
+
 
 @login_required
 def question_detail(request, question_id):

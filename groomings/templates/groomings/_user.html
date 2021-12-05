@@ -58,7 +58,7 @@
             {% else %}
             <a href="{% url 'groomings:follow' page_owner.id %}" class="btn btn-outline-info">フォローする</a>
             {% endif %}
-            <br><a href="#">このユーザーに匿名質問をする</a>
+            <br><a href="{% url 'groomings:create_question' page_owner.id %}">このユーザーに匿名質問をする</a>
           {% endif %}
         </div>
       </div>

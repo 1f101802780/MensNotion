@@ -52,7 +52,7 @@ class QuestionForm(BaseForm):
 
     class Meta:
         model = Question
-        exclude = ['good_question', 'good_answer', 'created_at']
+        exclude = ['good_question', 'good_answer', 'created_at', 'giver', 'recipient', 'to_giver_point', 'to_recipient_point', 'is_active']
         label = {
             'title': 'タイトル',
             'text': '本文',
@@ -60,8 +60,6 @@ class QuestionForm(BaseForm):
             'image2': '画像2',
             'image3': '画像3',
             'give_point': '付与するポイント',
-            'giver': '自分(ログイン処理作ったら消す)',
-            'recipient': '質問する相手'
         }
 
 class ReplyForm(BaseForm):
