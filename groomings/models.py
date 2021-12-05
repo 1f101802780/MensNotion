@@ -133,7 +133,7 @@ class Question(Date):
 
 class Reply(Date):
     """質問に対する返答モデル"""
-    text = models.TextField(null=False, blank=False)
+    text = models.CharField(max_length=255, null=False, blank=False)
     image = models.FileField(upload_to='reply_image/', null=True)
     question = models.ForeignKey(
         'Question', on_delete=CASCADE, related_name="question_reply"

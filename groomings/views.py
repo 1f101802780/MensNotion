@@ -218,21 +218,18 @@ def post_delete(request, post_id):
 def create_question(request, user_id):
     """匿名質問を送るページ"""
     recipient = User.objects.get(pk = user_id)
+    if recipient.point < 100 or request.user.point < 70:
+        messages.warning(request, '相手または自分の所持ポイントが足りません')
+        return redirect('groomings:top')
+        
     form = forms.QuestionForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        if recipient.point > 100 and request.user.point > 20: # 1週間以内のコメントに対するbadがgood+10を上回るとコメできない
-            form.instance.recipient = recipient
-            form.instance.giver = request.user
-            form.save()
-            messages.success(request, '質問しました')
-            return redirect('groomings:top')
-        else:
-           messages.warning(request, '相手または自分の所持ポイントが足りません')
-    # unvisited_comme_notifys = Notify.objects.filter(kind="question", notify_id=instance.id, user=recipient, from_user=giver)
-    # for notify in unvisited_comme_notifys: # このポストについたコメントの通知をvisitedにする
-    #     notify.is_visited = True
-    #     notify.save()
-    #comments = post.post_comment.all()
+        form.instance.recipient = recipient
+        form.instance.giver = request.user
+        form.save()
+        request.user.point -= form.instance.give_point
+        messages.success(request, f'{form.instance.give_point}を使って質問しました')
+        return redirect('groomings:top')
     return render(request, 'groomings/create_question.html', context={"form": form, "recipient": recipient})
 
 
@@ -261,23 +258,28 @@ def question_detail(request, question_id):
                 question.to_giver_point = int(request.POST.get("eval"))
                 if question.giver:
                     Notify.objects.create(kind="togiver_eval", notify_id=question_id, user=question.giver, from_user=question.recipient)
-                if question.to_recipient_point:
-                    question.is_active = False
                 question.save()
                 messages.success(request, '質問者を評価しました')
             elif question.giver == request.user and question.to_recipient_point == None: # 自分が質問者の場合
                 question.to_recipient_point = int(request.POST.get("eval"))
                 if question.recipient:
                     Notify.objects.create(kind="torecipient_eval", notify_id=question_id, user=question.recipient, from_user=question.giver)
-                if question.to_giver_point:
-                    question.is_active = False
                 question.save()
                 messages.success(request, '回答者を評価しました')
             else:
                 messages.warning(request, "既に評価済みです")
+
+            if question.to_giver_point and question.to_recipient_point: # 両方評価したら質問をclose
+                question.is_active = False
+                question.save()
+                if question.recipient:
+                    question.recipient.point += (question.give_point - 5) # 質問者が付与したポイントから消滅分5ポイントを引いた分が回答者に入る
+                    question.recipient.point += question.to_recipient_point # さらに質問者からの評価のポイントが追加
+                    question.recipient.save()
+                if question.giver:
+                    question.giver.point += question.to_giver_point # 回答者からの評価のポイントが追加
+                    question.giver.save()
             return redirect('groomings:question_detail', question_id)
-    else:
-        messages.warning(request, "既にcloseの質問です")
 
     unvisited_que_rep_notifys = Notify.objects.filter(kind__in=["question", "reply", "togiver_eval", "torecipient_eval"], notify_id=question_id, user=request.user, is_visited=False)
     for notify in unvisited_que_rep_notifys: # 匿名質問とリプライの通知をvisitedにする

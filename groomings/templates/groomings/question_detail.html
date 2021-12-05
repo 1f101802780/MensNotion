@@ -3,27 +3,34 @@
 
 
 {% block content %}
-    <h1>{{ question.title }}の詳細ページ</h1>
-    {% if question.giver == request.user and question.to_recipient_point %}
-        <h3>{{ question.recipient.username }}に星{{ question.to_recipient_point }}の評価をしました。</h3>
-        {% if question.is_active == False %}
-            <h3>{{ question.recipient.username }}から星{{ question.to_giver_point }}の評価をされました。</h3>
-        {% endif %}
-    {% elif question.recipient == request.user and question.to_giver_point %}
-        <h3>{{ question.giver.username }}に星{{ question.to_giver_point }}の評価をしました。</h3>
-        {% if question.is_active == False %}
-            <h3>{{ question.giver.username }}から星{{ question.to_recipient_point }}の評価をされました。</h3>
+    <h1>{{ question.title }}の詳細ページ | 付与ポイント: {{ question.give_point }}</h1>
+    {% if question.is_active == True %}
+        {% if question.giver == request.user and question.to_recipient_point %}
+            <div class="alert alert-info">{{ question.recipient.username }}に星{{ question.to_recipient_point }}の評価をしました。相手の評価待ちです。</div>
+        {% elif question.recipient == request.user and question.to_giver_point %}
+            <div class="alert alert-info">{{ question.giver.username }}に星{{ question.to_giver_point }}の評価をしました。相手の評価待ちです。</div>
+        {% else %}
+            {% if not question.to_giver_point and not question_to_recipient_point %}
+                <div class="alert alert-info">悩みが解決したら相手を評価しましょう</div>
+            {% else %}
+                <div class="alert alert-warning">相手が評価しました。あなたも評価しましょう。</div>
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <input type="radio" name="eval" value="1">1
+                <input type="radio" name="eval" value="2">2
+                <input type="radio" name="eval" value="3" checked>3
+                <input type="radio" name="eval" value="4">4
+                <input type="radio" name="eval" value="5">5
+                <input type="submit" name="button" value="評価する">
+            </form>
         {% endif %}
     {% else %}
-        <form method="POST">
-            {% csrf_token %}
-            <input type="radio" name="eval" value="1">1
-            <input type="radio" name="eval" value="2">2
-            <input type="radio" name="eval" value="3" checked>3
-            <input type="radio" name="eval" value="4">4
-            <input type="radio" name="eval" value="5">5
-            <input type="submit" name="button" value="評価する">
-        </form>
+        <div class="alert alert-info">
+            既にcloseの質問です。
+            {{ question.giver.username }} get星{{ question.to_giver_point }}
+            {{ question.recipient.username }} get星{{ question.to_recipient_point }}
+        </div>
     {% endif %}
 
     <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
