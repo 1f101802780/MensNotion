@@ -18,14 +18,14 @@
         {% endif %}
     </div>
     <div class="card-body">
-        <h4>コメントする</h4>
+        <h4><i class="fas fa-comment-medical"></i> コメントする</h4>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="送信" class="btn btn-outline-primary">
         </form>
 
-        <h4>コメント一覧</h4>
+        <h4><i class="far fa-comments"></i> コメント一覧</h4>
         <div class="all-comment">
             {% for comment in comments %}
             <div class="one-comment mb-2">
