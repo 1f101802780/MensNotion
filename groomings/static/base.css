@@ -7,3 +7,8 @@ h1{
 .bg-danger, .bg-info{
     color: white;
 }
+.one-comment{
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 5px;
+}

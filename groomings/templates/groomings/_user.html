@@ -19,7 +19,7 @@
           {% if page_owner == request.user %}
             <div class="dropdown notify">
               <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-                  通知{{ notifys | count_unvisit }}
+                <i class="fas fa-bell"></i> {{ notifys | count_unvisit }}
               </button>
               <!-- 選択肢 -->
               <div class="dropdown-menu">

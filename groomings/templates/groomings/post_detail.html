@@ -22,13 +22,13 @@
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="送信">
+            <input type="submit" value="送信" class="btn btn-outline-primary">
         </form>
 
         <h4>コメント一覧</h4>
         <div class="all-comment">
             {% for comment in comments %}
-            <div class="alert alert-info">
+            <div class="one-comment mb-2">
                 <p>{{ comment.user.username }}｜{{ comment.text }}</p>
                     {% if request.user in comment.favorite.all %}
                     <a href="{% url 'groomings:favo_comme' comment.id %}" class="btn btn-danger">いいね解除<span class="badge badge-light">{{ comment | count_commefavo }}</span></a>

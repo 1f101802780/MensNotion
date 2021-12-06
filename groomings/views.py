@@ -218,7 +218,7 @@ def post_delete(request, post_id):
 def create_question(request, user_id):
     """匿名質問を送るページ"""
     recipient = User.objects.get(pk = user_id)
-    if recipient.point < 100 or request.user.point < 70:
+    if recipient.point < 20 or request.user.point < 20:
         messages.warning(request, '相手または自分の所持ポイントが足りません')
         return redirect('groomings:top')
         
