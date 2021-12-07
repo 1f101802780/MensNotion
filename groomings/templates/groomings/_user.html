@@ -52,6 +52,29 @@
         </div>
         <div class="card-body">
           <p>ポイント数: {{ page_owner.point }}</p>
+          <div class="dropdown">
+            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+              匿名質問の回答者としての平均評価: {{ eval_as_recipient | ave_eval_ar }}
+            </button>
+            <!-- 選択肢 -->
+            <div class="dropdown-menu">
+                {% for eval_ar in eval_as_recipient %}
+                  <p>{{ eval_ar.giver.username }} | {{ eval_ar.to_recipient_point }}</p>
+                {% endfor %}
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+              匿名質問の質問者としての平均評価: {{ eval_as_giver | ave_eval_ag }}
+            </button>
+            <!-- 選択肢 -->
+            <div class="dropdown-menu">
+                {% for eval_ag in eval_as_giver %}
+                  <p>{{ eval_ag.recipient.username }} | {{ eval_ag.to_giver_point }}</p>
+                {% endfor %}
+            </div>
+          </div>
           {% if page_owner != request.user %}
             {% if page_owner in my_follows %}
             <a href="{% url 'groomings:unfollow' page_owner.id %}" class="btn btn-outline-danger">フォロー解除</a>

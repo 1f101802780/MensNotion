@@ -38,3 +38,23 @@ def count_unvisit(notifys):
 @register.filter(name="count_nonactive")
 def count_nonactive(user):
     return user.user_receive_question.filter(is_active=False).count()
+
+@register.filter(name="ave_eval_ag")
+def ave_eval_ag(questions):
+    if questions.count() == 0:
+        return "まだ評価がありません"
+    eval = 0
+    for question in questions:
+        if question.to_giver_point:
+            eval += question.to_giver_point
+    return eval / questions.count()
+
+@register.filter(name="ave_eval_ar")
+def ave_eval_ar(questions):
+    if questions.count() == 0:
+        return "まだ評価がありません"
+    eval = 0
+    for question in questions:
+        if question.to_recipient_point:
+            eval += question.to_recipient_point
+    return eval / questions.count()

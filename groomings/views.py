@@ -89,7 +89,11 @@ def user(request, user_id):
     my_follows = request.user.follow.all()
     posts = user.user_post.all()
     notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'groomings/user.html', context={"page_owner": user, "my_follows": my_follows, "posts": posts, "notifys": notifys})
+    eval_as_giver = user.user_give_question.filter(is_active=False).order_by('-created_at')
+    eval_as_recipient = user.user_receive_question.filter(is_active=False).order_by('-created_at')
+    return render(request, 'groomings/user.html', context={
+        "page_owner": user, "my_follows": my_follows, "posts": posts, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+        })
 
 @login_required
 def user_favo(request, user_id):
@@ -98,7 +102,11 @@ def user_favo(request, user_id):
     my_follows = request.user.follow.all()
     favo_posts = user.user_favo_post.all()
     notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'groomings/user_favo.html', context={"page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "notifys": notifys})
+    eval_as_giver = user.user_give_question.filter(is_active=False).order_by('-created_at')
+    eval_as_recipient = user.user_receive_question.filter(is_active=False).order_by('-created_at')
+    return render(request, 'groomings/user_favo.html', context={
+        "page_owner": user, "my_follows": my_follows, 'favo_posts': favo_posts, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+        })
 
 @login_required
 def edit_user(request):
@@ -322,7 +330,11 @@ def followee(request, user_id):
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followees = user.follow.all() # user_idのユーザーがフォローしてるユーザーたち
     notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'groomings/follow.html', context={"page_owner": user, "my_follows": my_follows, "followees": followees, "notifys": notifys})
+    eval_as_giver = user.user_give_question.filter(is_active=False).order_by('-created_at')
+    eval_as_recipient = user.user_receive_question.filter(is_active=False).order_by('-created_at')
+    return render(request, 'groomings/follow.html', context={
+        "page_owner": user, "my_follows": my_follows, "followees": followees, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+        })
 
 @login_required
 def follower(request, user_id):
@@ -331,7 +343,11 @@ def follower(request, user_id):
     my_follows = request.user.follow.all() # ログインユーザーがフォローしてるユーザーたち
     followers = user.follower.all() # useridのユーザーのフォロワーたち
     notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'groomings/follower.html', context={"page_owner": user, "my_follows": my_follows, "followers": followers, "notifys": notifys})
+    eval_as_giver = user.user_give_question.filter(is_active=False).order_by('-created_at')
+    eval_as_recipient = user.user_receive_question.filter(is_active=False).order_by('-created_at')
+    return render(request, 'groomings/follower.html', context={
+        "page_owner": user, "my_follows": my_follows, "followers": followers, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+        })
     
 @login_required
 def favorite(request, post_id):
