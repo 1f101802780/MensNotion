@@ -397,3 +397,8 @@ def bad_comme(request, comment_id):
             comment.user.save()
         messages.success(request, 'コメントにバッドしました')
         return redirect('groomings:post_detail', comment.post.id)
+
+@login_required
+def Anyms(request, user_id):
+    """匿名質問に関するページ"""
+    user = User.objects.get(pk=user_id)
