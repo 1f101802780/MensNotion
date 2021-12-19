@@ -404,4 +404,5 @@ def anyms(request, user_id):
     user = User.objects.get(pk=user_id)
     give_question = user.user_give_question
     receive_question = user.user_receive_question
-    return render(request, 'groomings/anyms.html', context={'user':user, 'give_question':give_question, 'receive_question':receive_question})
+    context={'user':user, 'give_question':give_question, 'receive_question':receive_question}
+    return render(request, 'groomings/anyms.html', context)

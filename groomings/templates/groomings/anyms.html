@@ -3,5 +3,37 @@
 
 {% block content %}
 
+<h5>送った匿名質問</h5><br>
+{{% if not give_question %}}
+<h5>送った匿名質問はありません</h5>
+{{% else %}}
+<ul class = 'list-unstyld'>
+    {{% for give in give_question.all %}}
+    <li class = "media mb-3 post">
+        <div class="media-body">
+            <a href = "% url 'groomings:post_detail' post.id %}">{{give_question.title}}</a>
+            <a href = "% url 'groomings:user' post.user.id %}">{{give_question.username}}</a>
+            <div>{{% give_question.text %}}</div>
+        </div>
+    </li>
+    {{% endfor %}}
+</ul>
+{{% endif %}}
+
+<h5>受け取った匿名質問</h5><br>
+{{% if not receive_question %}}
+<h5>受け取った匿名質問はありません</h5>
+{{% else %}}
+<ul class = 'list-unstyld'>
+    {{% for give in receive_question.all %}}
+    <li class = "media mb-3 post">
+        <div class="media-body">
+            <a href = "% url 'groomings:post_detail' post.id %}">{{receive_question.title}}</a>
+            <div>{{% receive_question.text %}}</div>
+        </div>
+    </li>>
+    {{% endfor %}}
+</ul>
+{{% endif %}}
 
 {% end block %}
