@@ -402,6 +402,6 @@ def bad_comme(request, comment_id):
 def anyms(request, user_id):
     """匿名質問に関するページ"""
     user = User.objects.get(pk=user_id)
-    givequestion = user.user_give_question
-    receive = user.user_receive_question
-    return render(request, 'groomings/anyms.html')
+    give_question = user.user_give_question
+    receive_question = user.user_receive_question
+    return render(request, 'groomings/anyms.html', context={'user':user, 'give_question':give_question, 'receive_question':receive_question})
