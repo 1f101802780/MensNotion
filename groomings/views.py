@@ -399,9 +399,9 @@ def bad_comme(request, comment_id):
         return redirect('groomings:post_detail', comment.post.id)
 
 @login_required
-def anyms(request, user_id):
-    """匿名質問に関するページ"""
-    user = User.objects.get(pk=user_id)
+def anyms(request):
+    """マイ匿名質問一覧ページ"""
+    user = request.user
     give_question = user.user_give_question.all()
     receive_question = user.user_receive_question.all()
     context={'user':user, 'give_question':give_question, 'receive_question':receive_question}
