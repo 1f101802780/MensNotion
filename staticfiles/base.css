@@ -1,0 +1,14 @@
+h2{
+    color: red;
+}
+.dropdown-menu .visited{
+    color: gray;
+}
+.bg-danger, .bg-info{
+    color: white;
+}
+.one-comment{
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 5px;
+}
