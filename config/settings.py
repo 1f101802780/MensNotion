@@ -89,10 +89,6 @@ DATABASES = {
     }
 }
 
-# 追記
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -138,7 +134,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -162,3 +157,6 @@ if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
     import django_heroku #追加
     django_heroku.settings(locals()) #追加
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
