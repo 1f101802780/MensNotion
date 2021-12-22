@@ -1,4 +1,3 @@
-__pycache__
-db.sqlite3
-.DS_Store
+staticfiles
 config/local_settings.py
+db.sqlite3
