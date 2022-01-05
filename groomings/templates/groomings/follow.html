@@ -16,7 +16,7 @@
         {% if followee.image %}
           <img src="{{ followee.image.url }}" alt="" width="30px">
         {% else %}
-          <img src="/media/static/default.png" alt="" width="30px">
+          <img src="/media/static_image/default.png" alt="" width="30px">
         {% endif %}
         <a href="{% url 'groomings:user' followee.id  %}">{{ followee.username }}</a>
       </div>
