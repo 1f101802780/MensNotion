@@ -190,6 +190,7 @@ if not DEBUG:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
+    AWS_QUERYSTRING_AUTH = False
 
     AWS_LOCATION = 'static'
     # AWS_S3_FILE_OVERWRITE = False
