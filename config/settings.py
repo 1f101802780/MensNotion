@@ -165,12 +165,6 @@ try:
 except ImportError:
     pass
 
-if not DEBUG:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    import django_heroku #追加
-    django_heroku.settings(locals()) #追加
-
-
 try:
     from config.local_settings import *
 except ImportError:
@@ -202,8 +196,8 @@ if not DEBUG:
     # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
-import django_heroku
-django_heroku.settings(locals())
+    import django_heroku
+    django_heroku.settings(locals())
 
 DEBUG = True # この行は後で消す
 
