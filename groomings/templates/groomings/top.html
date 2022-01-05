@@ -1,4 +1,5 @@
 {% extends "groomings/base.html" %} <!-- base.html(親)の継承 -->
+{% load static %}
 {% load tag_event %}
 {% block title %}Grooming{% endblock %} <!-- タイトル -->
 
@@ -15,7 +16,7 @@
           {% if post.user.image %}
           <img src="{{ post.user.image.url }}" width="40px">
           {% else %}
-          <img src="/media/static_image/default.png" width="40px">
+          <img src="{% static 'static_image/default.png' %}" width="40px">
           {% endif %}
           <div class="media-body">
               <a href="{% url 'groomings:post_detail' post.id %}">{{ post.title }}</a>
