@@ -10,7 +10,7 @@
         {% elif question.recipient == request.user and question.to_giver_point %}
             <div class="alert alert-info">{{ question.giver.username }}に星{{ question.to_giver_point }}の評価をしました。相手の評価待ちです。</div>
         {% else %}
-            {% if not question.to_giver_point and not question_to_recipient_point %}
+            {% if not question.to_giver_point and not question.to_recipient_point %}
                 <div class="alert alert-info">悩みが解決したら相手を評価しましょう</div>
             {% else %}
                 <div class="alert alert-warning">相手が評価しました。あなたも評価しましょう。</div>

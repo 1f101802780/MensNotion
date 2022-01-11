@@ -50,7 +50,7 @@
             <p>フォロワー数: {{ follower.follower.count }}</p>
             {% if user.is_authenticated %}
               {% if follower != request.user %}
-                <br><a href="#">このユーザーに匿名質問をする</a>
+                <br><a href="{% url 'groomings:create_question' follower.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
           </div>
@@ -76,24 +76,9 @@
             <p>総被匿名質問数: {{ que.user_receive_question.count }} →内解決済み： {{ que | count_nonactive }}</p>
             {% if user.is_authenticated %}
               {% if que != request.user %}
-                <br><a href="#">このユーザーに匿名質問をする</a>
+                <br><a href="{% url 'groomings:create_question' que.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <div class="col-md-4">
-      <h2>いいね数ランキング</h2>
-      {% for point in goods %}
-        <div class="point card">
-          <div class="card-header">
-            {{ point.title }}
-          </div>
-          <div class="body">
-            <p class="small">ユーザー名：{{ point.user.username }} &nbsp; | &nbsp; いいね数：{{ point | count_favo }}</p>
-            <p>{{ point.text }}</p>
           </div>
         </div>
       {% endfor %}
