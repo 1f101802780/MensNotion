@@ -226,6 +226,9 @@ def post_delete(request, post_id):
 def create_question(request, user_id):
     """匿名質問を送るページ"""
     recipient = User.objects.get(pk = user_id)
+    if recipient == request.user:
+        messages.warning(request, '自分自身への匿名質問はできません')
+        return redirect('groomings:top')
     if recipient.point < 20 or request.user.point < 20:
         messages.warning(request, '相手または自分の所持ポイントが足りません')
         return redirect('groomings:top')
@@ -234,10 +237,10 @@ def create_question(request, user_id):
     if form.is_valid():
         form.instance.recipient = recipient
         form.instance.giver = request.user
-        form.save()
+        question = form.save()
         request.user.point -= form.instance.give_point
         messages.success(request, f'{form.instance.give_point}を使って質問しました')
-        return redirect('groomings:top')
+        return redirect('groomings:question_detail', question.id)
     return render(request, 'groomings/create_question.html', context={"form": form, "recipient": recipient})
 
 

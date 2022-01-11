@@ -24,7 +24,7 @@
             <p>ポイント数: {{ userrank.point }}</p>
             {% if user.is_authenticated %}
               {% if userrank != request.user %}
-                <br><a href="#">このユーザーに匿名質問をする</a>
+                <br><a href="{% url 'groomings:create_question' userrank.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
           </div>

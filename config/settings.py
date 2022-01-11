@@ -194,7 +194,5 @@ if not DEBUG:
     import django_heroku
     django_heroku.settings(locals())
 
-DEBUG = True # この行は後で消す
-
 db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)

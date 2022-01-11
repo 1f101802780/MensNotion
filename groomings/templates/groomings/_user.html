@@ -53,9 +53,12 @@
         </div>
         <div class="card-body">
           <p>ポイント数: {{ page_owner.point }}</p>
+          {% if page_owner == request.user %}
+            <a href="{% url 'groomings:anyms' %}">マイ匿名質問一覧ページ</a>
+          {% endif %}
           <div class="dropdown">
             <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-              匿名質問の回答者としての平均評価: {{ eval_as_recipient | ave_eval_ar }}
+              <i class="fas fa-chalkboard-teacher"></i> 回答平均評価: {{ eval_as_recipient | ave_eval_ar }}
             </button>
             <!-- 選択肢 -->
             <div class="dropdown-menu">
@@ -67,7 +70,7 @@
           
           <div class="dropdown">
             <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-              匿名質問の質問者としての平均評価: {{ eval_as_giver | ave_eval_ag }}
+              <i class="fas fa-user-graduate"></i> 質問平均評価: {{ eval_as_giver | ave_eval_ag }}
             </button>
             <!-- 選択肢 -->
             <div class="dropdown-menu">

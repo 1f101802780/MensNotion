@@ -42,7 +42,7 @@ def count_nonactive(user):
 @register.filter(name="ave_eval_ag")
 def ave_eval_ag(questions):
     if questions.count() == 0:
-        return "まだ評価がありません"
+        return "none"
     eval = 0
     for question in questions:
         if question.to_giver_point:
@@ -52,7 +52,7 @@ def ave_eval_ag(questions):
 @register.filter(name="ave_eval_ar")
 def ave_eval_ar(questions):
     if questions.count() == 0:
-        return "まだ評価がありません"
+        return "none"
     eval = 0
     for question in questions:
         if question.to_recipient_point:
