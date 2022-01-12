@@ -1,4 +1,6 @@
 __pycache__
 ../groomings/__pycache__
+../groomings//templatetags/__pycache__
+../groomings/migrations/__pycache__
 .DS_Store
 local_settings.py
