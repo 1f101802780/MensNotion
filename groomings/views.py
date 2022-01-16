@@ -235,12 +235,16 @@ def create_question(request, user_id):
         
     form = forms.QuestionForm(request.POST or None, request.FILES or None)
     if form.is_valid():
-        form.instance.recipient = recipient
-        form.instance.giver = request.user
-        question = form.save()
-        request.user.point -= form.instance.give_point
-        messages.success(request, f'{form.instance.give_point}を使って質問しました')
-        return redirect('groomings:question_detail', question.id)
+        if form.instance.give_point <= request.user.point:
+            form.instance.recipient = recipient
+            form.instance.giver = request.user
+            question = form.save()
+            request.user.point -= form.instance.give_point
+            request.user.save()
+            messages.success(request, f'{form.instance.give_point}を使って質問しました')
+            return redirect('groomings:question_detail', question.id)
+        else:
+            form.add_error('give_point', "与えるポイントが足りません")
     return render(request, 'groomings/create_question.html', context={"form": form, "recipient": recipient})
 
 
@@ -374,6 +378,9 @@ def favo_comme(request, comment_id):
         if comment.user.point >= 5:
             comment.user.point -= 5
             comment.user.save()
+        else:
+            comment.user.point = 0
+            comment.user.save()
         messages.success(request, 'コメントへのいいねを取り消しました')
         return redirect('groomings:post_detail', comment.post.id)
     else:
@@ -397,6 +404,9 @@ def bad_comme(request, comment_id):
         comment.bad.add(request.user)
         if comment.user.point >= 5:
             comment.user.point -= 5
+            comment.user.save()
+        else:
+            comment.user.point = 0
             comment.user.save()
         messages.success(request, 'コメントにバッドしました')
         return redirect('groomings:post_detail', comment.post.id)
