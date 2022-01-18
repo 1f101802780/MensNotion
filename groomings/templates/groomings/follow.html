@@ -5,7 +5,7 @@
 {% block posts %}
   <!-- postsの中身 -->
   <ul class="nav nav-tabs">
-    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link">自分の投稿<span class="badge badge-info">{{ page_owner | count_my_post }}</span></a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link">投稿<span class="badge badge-info">{{ page_owner | count_my_post }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:followee' page_owner.id %}" class="nav-link active">フォロー<span class="badge badge-info">{{ page_owner | count_follow }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:follower' page_owner.id %}" class="nav-link">フォロワー<span class="badge badge-info">{{ page_owner | count_follower }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:user_favo' page_owner.id %}" class="nav-link">お気に入り<span class="badge badge-info">{{ page_owner | count_my_favo }}</span></a></li>
@@ -15,22 +15,26 @@
     <div class="card">
       <div class="card-header">
         {% if followee.image %}
-          <img src="{{ followee.image.url }}" alt="" width="30px">
+          <img src="{{ followee.image.url }}" alt="" width="40px">
         {% else %}
-          <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
+          <img src="{% static 'static_image/default.png' %}" alt="" width="40px">
         {% endif %}
         <a href="{% url 'groomings:user' followee.id  %}">{{ followee.username }}</a>
       </div>
 
       <div class="card-body">
-        <p>ポイント数: {{ followee.point }}</p>
+        <p>
+          ポイント数: <span class="number">{{ followee.point }}</span><br>
+          フォロワー数: <span class="number">{{ followee.follower.count }}</span><br>
+          もらった秘密質問数: <span class="number">{{ followee.user_receive_question.count }}</span> →内解決済み: <span class="number">{{ followee | count_nonactive }}</span>
+        </p>
         {% if followee != request.user %}
           {% if followee in my_follows %}
-            <a href="{% url 'groomings:unfollow' followee.id %}" class="badge bg-danger">フォロー解除</a>
+            <a href="{% url 'groomings:unfollow' followee.id %}" class="btn btn-info">フォロー解除</a>
           {% else %}
-            <a href="{% url 'groomings:follow' followee.id %}" class="badge bg-info">フォローする</a>
+            <a href="{% url 'groomings:follow' followee.id %}" class="btn btn-outline-info">フォローする</a>
           {% endif %}
-          <br><a href="#">このユーザーに匿名質問をする</a>
+          <br><a href="{% url 'groomings:create_question' followee.id %}">このユーザーに匿名質問をする</a>
         {% endif %}
       </div>
     </div>

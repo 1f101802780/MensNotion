@@ -1,9 +1,10 @@
 {% extends "groomings/base.html" %}
-{% block title %}匿名質問詳細{% endblock %} <!-- タイトル -->
+{% block title %}秘密質問詳細{% endblock %} <!-- タイトル -->
 
 
 {% block content %}
-    <h1>{{ question.title }}の詳細ページ | 付与ポイント: {{ question.give_point }}</h1>
+    <h1>{{ question.title }}</h1><span class="badge badge-info">付与ポイント: {{ question.give_point }}</span><span class="badge badge-warning">チップポイント: {{ question.give_point | add:"-5" }}</span>
+    <h2>質問者: {{ question.giver.username }} &gt&gt&gt 回答者:{{ question.recipient.username }}</h2>
     {% if question.is_active == True %}
         {% if question.giver == request.user and question.to_recipient_point %}
             <div class="alert alert-info">{{ question.recipient.username }}に星{{ question.to_recipient_point }}の評価をしました。相手の評価待ちです。</div>
@@ -11,29 +12,29 @@
             <div class="alert alert-info">{{ question.giver.username }}に星{{ question.to_giver_point }}の評価をしました。相手の評価待ちです。</div>
         {% else %}
             {% if not question.to_giver_point and not question.to_recipient_point %}
-                <div class="alert alert-info">悩みが解決したら相手を評価しましょう</div>
+                <div class="alert alert-info">悩みが解決したら相手を評価しましょう
             {% else %}
-                <div class="alert alert-warning">相手が評価しました。あなたも評価しましょう。</div>
+                <div class="alert alert-warning">相手が評価しました。あなたも評価しましょう
             {% endif %}
-            <form method="POST">
-                {% csrf_token %}
-                <input type="radio" name="eval" value="1">1
-                <input type="radio" name="eval" value="2">2
-                <input type="radio" name="eval" value="3" checked>3
-                <input type="radio" name="eval" value="4">4
-                <input type="radio" name="eval" value="5">5
-                <input type="submit" name="button" value="評価する">
-            </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="radio" name="eval" value="1">1
+                        <input type="radio" name="eval" value="2">2
+                        <input type="radio" name="eval" value="3" checked>3
+                        <input type="radio" name="eval" value="4">4
+                        <input type="radio" name="eval" value="5">5
+                        <input type="submit" name="button" value="評価する" class="btn btn-secondary">
+                    </form>
+                </div>
         {% endif %}
     {% else %}
         <div class="alert alert-info">
-            既にcloseの質問です。
-            {{ question.giver.username }} get星{{ question.to_giver_point }}
-            {{ question.recipient.username }} get星{{ question.to_recipient_point }}
+            既にcloseの質問です。<br>
+            質問者 {{ question.giver.username }}への評価: 星{{ question.to_giver_point }}<br>
+            回答者 {{ question.recipient.username }}への評価: 星{{ question.to_recipient_point }}
         </div>
     {% endif %}
 
-    <h2>質問した人: {{ question.giver.username }} | 質問された人: {{ question.recipient.username }}</h2>
     {% if question.image1 %}
     <img src="{{ question.image1.url }}" width="200">
     {% endif %}
@@ -44,25 +45,24 @@
     <img src="{{ question.image3.url }}" width="200">
     {% endif %}
     <p>{{ question.text }}</p>
-
-    <h3>返信一覧</h3>
-    <ul>
+    <hr>
+    <div class="replys">
         {% for reply in replys %}
-        <li>
-            {{reply.giver.username }}<br>
+        <div class="reply">
+            {{ reply.giver.username }}<br>
             {% if reply.image %}
             <img src="{{ reply.image.url }}" width="150">
             {% endif %}
             {{ reply.text }}
-        </li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
     {% if question.is_active == True %}
         <h2>返信する</h2>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="投稿">
+            <input type="submit" value="投稿" class="btn btn-outline-danger">
         </form>
     {% endif %}
 {% endblock %}

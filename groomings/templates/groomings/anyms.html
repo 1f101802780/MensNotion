@@ -2,39 +2,77 @@
 {% block title %}匿名質問一覧画面{% endblock %} <!-- タイトル -->
 
 {% block content %}
-
-<h5>送った匿名質問</h5><br>
-{% if not give_question %}
-<h5>送った匿名質問はありません</h5>
-{% else %}
-<ul class="list-unstyld">
-    {% for give in give_question %}
-    <li class = "media mb-3 post">
-        <div class="media-body">
-            <h3>{{ give.title }}</h3>
-            <a href = "{% url 'groomings:user' give.recipient.id %}">回答者: {{ give.recipient.username }}</a>
-            <div>{{ give.text }}</div>
+<div class="row">
+    <div class="col-sm-6 secret_gives">
+        <h4>送った秘密質問</h4>
+        {% if not give_question %}
+        <h5>送った匿名質問はありません</h5>
+        {% else %}
+        {% for give in give_question %}
+        <div class="card">
+            <div class="card-header">
+                <a href="{% url 'groomings:question_detail' give.id %}">{{ give.title }}</a>
+                {% if give.is_active %}
+                <span class="badge badge-secondary">未解決</span>
+                {% else %}
+                <span class="badge badge-success">解決済み</span>
+                {% endif %}
+                <br>
+                <small>{{ give.created_at }}</small><br>
+                回答者: <a href = "{% url 'groomings:user' give.recipient.id %}">{{ give.recipient.username }}</a>
+            </div>
+            <div class="card-body">
+                {% if give.image1 %}
+                <img src="{{ give.image1.url }}" width="200">
+                {% endif %}
+                {% if give.image2 %}
+                <img src="{{ give.image2.url }}" width="200">
+                {% endif %}
+                {% if give.image3 %}
+                <img src="{{ give.image3.url }}" width="200">
+                {% endif %}
+                <div>{{ give.text }}</div>
+            </div>
         </div>
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
+        <br>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-<h5>受け取った匿名質問</h5><br>
-{% if not receive_question %}
-<h5>受け取った匿名質問はありません</h5>
-{% else %}
-<ul class="list-unstyld">
-    {% for receive in receive_question %}
-    <li class = "media mb-3 post">
-        <div class="media-body">
-            <h3>{{ receive.title }}</h3>
-            <a href = "{% url 'groomings:user' receive.giver.id %}">質問者: {{ receive.giver.username }}</a>
-            <div>{{ receive.text }}</div>
+    <div class="col-sm-6 secret_receives">
+        <h4>受け取った秘密質問</h4>
+        {% if not receive_question %}
+        <h5>受け取った匿名質問はありません</h5>
+        {% else %}
+        {% for receive in receive_question %}
+        <div class="card">
+            <div class="card-header">
+                <a href="{% url 'groomings:question_detail' receive.id %}">{{ receive.title }}</a>
+                {% if receive.is_active %}
+                <span class="badge badge-secondary">未解決</span>
+                {% else %}
+                <span class="badge badge-success">解決済み</span>
+                {% endif %}
+                <br>
+                <small>{{ receive.created_at }}</small><br>
+                質問者: <a href = "{% url 'groomings:user' receive.giver.id %}">{{ receive.giver.username }}</a>
+            </div>
+            <div class="card-body">
+                {% if receive.image1 %}
+                <img src="{{ receive.image1.url }}" width="200">
+                {% endif %}
+                {% if receive.image2 %}
+                <img src="{{ receive.image2.url }}" width="200">
+                {% endif %}
+                {% if receive.image3 %}
+                <img src="{{ receive.image3.url }}" width="200">
+                {% endif %}
+                <div>{{ receive.text }}</div>
+            </div>
         </div>
-    </li>
-    {% endfor %}
-</ul>
+        <br>
+        {% endfor %}
+    </div>
+</div>
 {% endif %}
-
 {% endblock %}

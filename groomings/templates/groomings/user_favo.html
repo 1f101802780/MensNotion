@@ -5,7 +5,7 @@
 {% block posts %}
   <!-- postsの中身 -->
   <ul class="nav nav-tabs">
-    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link">自分の投稿<span class="badge badge-info">{{ page_owner | count_my_post }}</span></a></li>
+    <li class="nav-item"><a href="{% url 'groomings:user' page_owner.id %}" class="nav-link">投稿<span class="badge badge-info">{{ page_owner | count_my_post }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:followee' page_owner.id %}" class="nav-link">フォロー<span class="badge badge-info">{{ page_owner | count_follow }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:follower' page_owner.id %}" class="nav-link">フォロワー<span class="badge badge-info">{{ page_owner | count_follower }}</span></a></li>
     <li class="nav-item"><a href="{% url 'groomings:user_favo' page_owner.id %}" class="nav-link active">お気に入り<span class="badge badge-info">{{ page_owner | count_my_favo }}</span></a></li>
@@ -41,20 +41,20 @@
                   {% endif %}
               </div>
               {% if post.user == request.user %}
-              <a href="{% url 'groomings:post_edit' post.id %}">編集</a>
-              <a href="{% url 'groomings:post_delete' post.id %}">削除</a>
+              <a href="{% url 'groomings:post_edit' post.id %}"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'groomings:post_delete' post.id %}"><i class="fas fa-trash-alt"></i></a>
               {% endif %}
           </div>
       </li>
       {% if request.user.is_authenticated %}
           {% if request.user in post.favorite.all %}
-          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-primary">いいね解除<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          <a href="{% url 'groomings:favorite' post.id %}"><i class="fas fa-heart"></i><span class="badge badge-light">{{ post | count_favo }}</span></a>
           {% else %}
-          <a href="{% url 'groomings:favorite' post.id %}" class="btn btn-outline-primary">いいね<span class="badge badge-light">{{ post | count_favo }}</span></a>
+          <a href="{% url 'groomings:favorite' post.id %}"><i class="far fa-heart"></i><span class="badge badge-light">{{ post | count_favo }}</span></a>
           {% endif %}
       {% endif %}
       {% if request.user.is_authenticated %}
-          <a href = "{% url 'groomings:post_detail' post.id %}">コメント</a>
+          <a href = "{% url 'groomings:post_detail' post.id %}#comment"><i class="far fa-comments"></i><span class="badge badge-light">{{ post.post_comment.count }}</span></a>
       {% endif %}
       <hr>
     {% endfor %}

@@ -10,9 +10,9 @@
       <div class="card">
         <div class="card-header">
           {% if page_owner.image %}
-            <img src="{{ page_owner.image.url }}" alt="" width="60px">
+            <img src="{{ page_owner.image.url }}" alt="" width="100px">
           {% else %}
-            <img src="{% static 'static_image/default.png' %}" alt="" width="60px">
+            <img src="{% static 'static_image/default.png' %}" alt="" width="100px">
           {% endif %}
           <h2>{{ page_owner.username }}</h2>
 
@@ -52,30 +52,33 @@
           {% endif %}
         </div>
         <div class="card-body">
-          <p>ポイント数: {{ page_owner.point }}</p>
+          <p>
+            ポイント数: <span class="number">{{ page_owner.point }}</span><br>
+            もらった秘密質問数: <span class="number">{{ page_owner.user_receive_question.count }}</span> →内解決済み: <span class="number">{{ page_owner | count_nonactive }}</span>
+          </p>
           {% if page_owner == request.user %}
             <a href="{% url 'groomings:anyms' %}">マイ匿名質問一覧ページ</a>
           {% endif %}
           <div class="dropdown">
             <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-              <i class="fas fa-chalkboard-teacher"></i> 回答平均評価: {{ eval_as_recipient | ave_eval_ar }}
+              <i class="fas fa-chalkboard-teacher"></i> 回答平均評価: <span class="secret_number">{{ eval_as_recipient | ave_eval_ar }}</span>
             </button>
             <!-- 選択肢 -->
             <div class="dropdown-menu">
                 {% for eval_ar in eval_as_recipient %}
-                  <p>{{ eval_ar.giver.username }} | {{ eval_ar.to_recipient_point }}</p>
+                  <a href="{% url 'groomings:question_detail' eval_ar.id %}">評価: {{ eval_ar.to_recipient_point }} 質問者: {{ eval_ar.giver.username }}</a>
                 {% endfor %}
             </div>
           </div>
           
           <div class="dropdown">
             <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-              <i class="fas fa-user-graduate"></i> 質問平均評価: {{ eval_as_giver | ave_eval_ag }}
+              <i class="fas fa-user-graduate"></i> 質問平均評価: <span class="secret_number">{{ eval_as_giver | ave_eval_ag }}</span>
             </button>
             <!-- 選択肢 -->
             <div class="dropdown-menu">
                 {% for eval_ag in eval_as_giver %}
-                  <p>{{ eval_ag.recipient.username }} | {{ eval_ag.to_giver_point }}</p>
+                  <a href="{% url 'groomings:question_detail' eval_ag.id %}">評価: {{ eval_ag.to_giver_point }}点 回答者: {{ eval_ag.recipient.username }}</a>
                 {% endfor %}
             </div>
           </div>

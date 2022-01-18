@@ -59,7 +59,7 @@
     </div>
 
     <div class="col-md-4">
-      <h2>もらった匿名質問数ランキング</h2>
+      <h2>もらった秘密質問数ランキング</h2>
       {% for que in num_que %}
         <div class="card">
           <div class="card-header">
@@ -73,7 +73,7 @@
           </div>
     
           <div class="card-body">
-            <p>総被匿名質問数: {{ que.user_receive_question.count }} →内解決済み： {{ que | count_nonactive }}</p>
+            <p>もらった秘密質問数: {{ que.user_receive_question.count }} →内解決済み: {{ que | count_nonactive }}</p>
             {% if user.is_authenticated %}
               {% if que != request.user %}
                 <br><a href="{% url 'groomings:create_question' que.id %}">このユーザーに匿名質問をする</a>
