@@ -42,6 +42,7 @@
                         <img src="{{ comment.user.image.url }}" width="40px">
                     {% else %}
                         <img src="{% static 'static_image/default.png' %}" width="40px">
+                    {% endif %}
                     {{ comment.user.username }} {{ comment.created_at }}
                     <br>{{ comment.text }}
                 </div>
