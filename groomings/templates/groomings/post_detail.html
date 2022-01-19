@@ -38,7 +38,10 @@
             {% for comment in comments %}
             <div class="one-comment mb-2">
                 <div>
-                    <img src="{{ comment.user.image.url }}" width="40px">
+                    {% if comment.user.image %}
+                        <img src="{{ comment.user.image.url }}" width="40px">
+                    {% else %}
+                        <img src="{% static 'static_image/default.png' %}" width="40px">
                     {{ comment.user.username }} {{ comment.created_at }}
                     <br>{{ comment.text }}
                 </div>
