@@ -229,7 +229,7 @@ def create_question(request, user_id):
     if recipient == request.user:
         messages.warning(request, '自分自身への匿名質問はできません')
         return redirect('groomings:top')
-    if recipient.point < 100 or request.user.point < 70:
+    if recipient.point < 50 or request.user.point < 50:
         messages.warning(request, '相手または自分の所持ポイントが足りません')
         return redirect('groomings:top')
         
