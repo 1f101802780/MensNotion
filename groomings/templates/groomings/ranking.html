@@ -11,24 +11,30 @@
       {% for userrank in points %}
        <div class="card">
           <div class="card-header">
-            <h3>{{ forloop.counter }}位</h3>
-            {% if userrank.image %}
-              <img src="{{ userrank.image.url }}" alt="" width="30px">
-            {% else %}
-              <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
-            {% endif %}
-            <a href="{% url 'groomings:user' userrank.id  %}">{{ userrank.username }}</a>
+            <h3>{{ forloop.counter }}位
+              {% if userrank.image %}
+                <img src="{{ userrank.image.url }}" alt="" width="30px">
+              {% else %}
+                <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
+              {% endif %}
+              <a href="{% url 'groomings:user' userrank.id  %}">{{ userrank.username }}</a>
+            </h3>
           </div>
-    
+
           <div class="card-body">
-            <p>ポイント数: {{ userrank.point }}</p>
-            {% if user.is_authenticated %}
+            <p>
+              ポイント数: <span class="number">{{ userrank.point }}</span><hr>
+              フォロワー数: <span>{{ userrank.follower.count }}</span><br>
+              もらった秘密質問数: <span>{{ userrank.user_receive_question.count }}</span> →内解決済み: <span>{{ userrank | count_nonactive }}</span>
+            </p>
+            {% if request.user.is_authenticated %}
               {% if userrank != request.user %}
-                <br><a href="{% url 'groomings:create_question' userrank.id %}">このユーザーに匿名質問をする</a>
+                <a href="{% url 'groomings:create_question' userrank.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
           </div>
         </div>
+        <br>
       {% endfor %}
     </div>
 
@@ -37,24 +43,30 @@
       {% for follower in followers %}
         <div class="card">
           <div class="card-header">
-            <h3>{{ forloop.counter }}位</h3>
-            {% if follower.image %}
-              <img src="{{ follower.image.url }}" alt="" width="30px">
-            {% else %}
-              <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
-            {% endif %}
-            <a href="{% url 'groomings:user' follower.id  %}">{{ follower.username }}</a>
+            <h3>{{ forloop.counter }}位
+              {% if follower.image %}
+                <img src="{{ follower.image.url }}" alt="" width="30px">
+              {% else %}
+                <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
+              {% endif %}
+              <a href="{% url 'groomings:user' follower.id  %}">{{ follower.username }}</a>
+            </h3>
           </div>
     
           <div class="card-body">
-            <p>フォロワー数: {{ follower.follower.count }}</p>
-            {% if user.is_authenticated %}
+            <p>
+              フォロワー数: <span class="number">{{ follower.follower.count }}</span><hr>
+              ポイント数: <span>{{ follower.point }}</span><br>
+              もらった秘密質問数: <span>{{ follower.user_receive_question.count }}</span> →内解決済み: <span>{{ follower | count_nonactive }}</span>
+            </p>
+            {% if request.user.is_authenticated %}
               {% if follower != request.user %}
-                <br><a href="{% url 'groomings:create_question' follower.id %}">このユーザーに匿名質問をする</a>
+                <a href="{% url 'groomings:create_question' follower.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
           </div>
         </div>
+        <br>
       {% endfor %}
     </div>
 
@@ -63,24 +75,30 @@
       {% for que in num_que %}
         <div class="card">
           <div class="card-header">
-            <h3>{{ forloop.counter }}位</h3>
-            {% if que.image %}
-              <img src="{{ que.image.url }}" alt="" width="30px">
-            {% else %}
-              <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
-            {% endif %}
-            <a href="{% url 'groomings:user' que.id  %}">{{ que.username }}</a>
+            <h3>{{ forloop.counter }}位
+              {% if que.image %}
+                <img src="{{ que.image.url }}" alt="" width="30px">
+              {% else %}
+                <img src="{% static 'static_image/default.png' %}" alt="" width="30px">
+              {% endif %}
+              <a href="{% url 'groomings:user' que.id  %}">{{ que.username }}</a>
+            </h3>
           </div>
     
           <div class="card-body">
-            <p>もらった秘密質問数: {{ que.user_receive_question.count }} →内解決済み: {{ que | count_nonactive }}</p>
-            {% if user.is_authenticated %}
+            <p>
+              もらった秘密質問数: <span class="number">{{ que.user_receive_question.count }}</span> →内解決済み: <span class="number">{{ que | count_nonactive }}</span><hr>
+              フォロワー数: <span>{{ que.follower.count }}</span><br>
+              ポイント数: <span>{{ que.point }}</span><br>
+            </p>
+            {% if request.user.is_authenticated %}
               {% if que != request.user %}
-                <br><a href="{% url 'groomings:create_question' que.id %}">このユーザーに匿名質問をする</a>
+                <a href="{% url 'groomings:create_question' que.id %}">このユーザーに匿名質問をする</a>
               {% endif %}
             {% endif %}
           </div>
         </div>
+        <br>
       {% endfor %}
     </div>
 </div>

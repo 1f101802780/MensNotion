@@ -30,9 +30,9 @@
         </p>
         {% if followee != request.user %}
           {% if followee in my_follows %}
-            <a href="{% url 'groomings:unfollow' followee.id %}" class="btn btn-info">フォロー解除</a>
+            <a href="{% url 'groomings:unfollow' followee.id %}" class="btn btn-info p-1">フォロー解除</a>
           {% else %}
-            <a href="{% url 'groomings:follow' followee.id %}" class="btn btn-outline-info">フォローする</a>
+            <a href="{% url 'groomings:follow' followee.id %}" class="btn btn-outline-info p-1">フォローする</a>
           {% endif %}
           <br><a href="{% url 'groomings:create_question' followee.id %}">このユーザーに匿名質問をする</a>
         {% endif %}

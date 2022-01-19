@@ -229,7 +229,7 @@ def create_question(request, user_id):
     if recipient == request.user:
         messages.warning(request, '自分自身への匿名質問はできません')
         return redirect('groomings:top')
-    if recipient.point < 20 or request.user.point < 20:
+    if recipient.point < 100 or request.user.point < 70:
         messages.warning(request, '相手または自分の所持ポイントが足りません')
         return redirect('groomings:top')
         
@@ -241,7 +241,7 @@ def create_question(request, user_id):
             question = form.save()
             request.user.point -= form.instance.give_point
             request.user.save()
-            messages.success(request, f'{form.instance.give_point}を使って質問しました')
+            messages.success(request, f'{form.instance.give_point}ポイントを使って質問しました')
             return redirect('groomings:question_detail', question.id)
         else:
             form.add_error('give_point', "与えるポイントが足りません")
