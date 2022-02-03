@@ -82,18 +82,22 @@ def user_signup(request):
         'form': form,
     })
 
-@login_required
 def user(request, user_id):
     """ユーザーページ"""
     user = User.objects.get(pk=user_id)
-    my_follows = request.user.follow.all()
     posts = user.user_post.all()
-    notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
     eval_as_giver = user.user_give_question.filter(is_active=False).order_by('-created_at')
     eval_as_recipient = user.user_receive_question.filter(is_active=False).order_by('-created_at')
-    return render(request, 'groomings/user.html', context={
-        "page_owner": user, "my_follows": my_follows, "posts": posts, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
-        })
+    if request.user.is_authenticated:
+        my_follows = request.user.follow.all()
+        notifys = Notify.objects.filter(user=request.user).order_by('-created_at')
+        return render(request, 'groomings/user.html', context={
+            "page_owner": user, "my_follows": my_follows, "posts": posts, "notifys": notifys, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+            })
+    else:
+        return render(request, 'groomings/user.html', context={
+            "page_owner": user, "posts": posts, "eval_as_giver": eval_as_giver, "eval_as_recipient": eval_as_recipient
+            })
 
 @login_required
 def user_favo(request, user_id):
@@ -163,24 +167,25 @@ def ranking(request):
     post_orderby_favo = Post.objects.annotate(num_favo=Count('favorite')).order_by('-num_favo')[:10]
     return render(request, 'groomings/ranking.html',context={"points": points, "followers": follower, "num_que": num_que, "goods": post_orderby_favo}) # , 'id': user_id})
 
-@login_required
+# @login_required
 def post_detail(request, post_id):
     """投稿詳細ページ"""
     post = Post.objects.get(pk=post_id)
     comme_form = forms.CommentForm(request.POST or None)
-    if comme_form.is_valid():
-        if good_bad(request.user) > -10: # 1週間以内のコメントに対するbadがgood+10を上回るとコメできない
-            comme_form.instance.user = request.user
-            comme_form.instance.post = post
-            comme_form.save()
-            messages.success(request, 'コメントしました')
-            return redirect('groomings:top')
-        else:
-            messages.warning(request, '週間bad数がgood数+10以上だとコメできません')
-    unvisited_comme_notifys = Notify.objects.filter(kind="comment", notify_id=post_id, user=request.user, is_visited=False)
-    for notify in unvisited_comme_notifys: # このポストについたコメントの通知をvisitedにする
-        notify.is_visited = True
-        notify.save()
+    if request.user.is_authenticated:
+        if comme_form.is_valid():
+            if good_bad(request.user) > -10: # 1週間以内のコメントに対するbadがgood+10を上回るとコメできない
+                comme_form.instance.user = request.user
+                comme_form.instance.post = post
+                comme_form.save()
+                messages.success(request, 'コメントしました')
+                return redirect('groomings:top')
+            else:
+                messages.warning(request, '週間bad数がgood数+10以上だとコメできません')
+        unvisited_comme_notifys = Notify.objects.filter(kind="comment", notify_id=post_id, user=request.user, is_visited=False)
+        for notify in unvisited_comme_notifys: # このポストについたコメントの通知をvisitedにする
+            notify.is_visited = True
+            notify.save()
     comments = post.post_comment.all()
     return render(request, 'groomings/post_detail.html', context={"post": post, "form": comme_form, "comments": comments})
 

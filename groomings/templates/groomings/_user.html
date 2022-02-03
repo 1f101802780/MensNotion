@@ -66,7 +66,7 @@
             <!-- 選択肢 -->
             <div class="dropdown-menu">
                 {% for eval_ar in eval_as_recipient %}
-                  <a href="{% url 'groomings:question_detail' eval_ar.id %}">評価: {{ eval_ar.to_recipient_point }} 質問者: {{ eval_ar.giver.username }}</a>
+                  <a href="{% url 'groomings:question_detail' eval_ar.id %}">評価: {{ eval_ar.to_recipient_point }} 質問者: {{ eval_ar.giver.username }}</a><br>
                 {% endfor %}
             </div>
           </div>
@@ -78,7 +78,7 @@
             <!-- 選択肢 -->
             <div class="dropdown-menu">
                 {% for eval_ag in eval_as_giver %}
-                  <a href="{% url 'groomings:question_detail' eval_ag.id %}">評価: {{ eval_ag.to_giver_point }}点 回答者: {{ eval_ag.recipient.username }}</a>
+                  <a href="{% url 'groomings:question_detail' eval_ag.id %}">評価: {{ eval_ag.to_giver_point }}点 回答者: {{ eval_ag.recipient.username }}</a><br>
                 {% endfor %}
             </div>
           </div>
