@@ -16,7 +16,7 @@
           {% endif %}
           <h2>{{ page_owner.username }}</h2>
 
-          <!-- マイページの場合、通知一覧を表示する -->
+          <!-- マイページの場合、通知一覧を表示 -->
           {% if page_owner == request.user %}
             <div class="dropdown notify">
               <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
