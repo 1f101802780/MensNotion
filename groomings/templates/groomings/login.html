@@ -4,7 +4,7 @@
 {% block content %}
     <!-- bodyの中身 -->
     <h1 style="color: red;">Login</h1>
-    <p>ログインすることで他ユーザーをフォローしたり、投稿にコメントをしたり、匿名質問ができたりします。</p>
+    <p>ログインすることで他ユーザーをフォローしたり、投稿にコメントをしたり、匿名質問ができたりします</p>
     <form method="POST">
         {% csrf_token %}
         {{ login_form.as_p }}
